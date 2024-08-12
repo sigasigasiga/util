@@ -15,6 +15,7 @@ template<typename F, typename... Args>
     return std::bind_front(get_reference_wrap(std::forward<F>(f)), std::forward<Args>(args)...);
 }
 
+#if 0
 template<typename F, typename... Args>
 [[nodiscard]] constexpr auto bind_back_unwrap(F &&f, Args &&...args) //
     noexcept(
@@ -25,6 +26,7 @@ template<typename F, typename... Args>
     // TODO: use `std::bind_back` when llvm 19
     return ranges::bind_back(get_reference_wrap(std::forward<F>(f)), std::forward<Args>(args)...);
 }
+#endif
 
 // -------------------------------------------------------------------------------------------------
 
@@ -55,11 +57,13 @@ template<typename Container>
 
 // -------------------------------------------------------------------------------------------------
 
+#if 0
 template<typename Idx>
 [[nodiscard]] constexpr auto index_with(Idx &&idx)
     noexcept(noexcept(bind_back_unwrap(subscript(), std::forward<Idx>(idx))))
 {
     return bind_back_unwrap(subscript(), std::forward<Idx>(idx));
 }
+#endif
 
 } // namespace siga::util
