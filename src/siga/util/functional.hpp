@@ -505,12 +505,8 @@ class std::is_bind_expression<siga::util::make_bind_expression<F>> : public std:
 
 // -------------------------------------------------------------------------------------------------
 
-#define SIGA_UTIL_AS_SINGLE(...) __VA_ARGS__
-
-// -------------------------------------------------------------------------------------------------
-
 // clang-format off
-#define SIGA_UTIL_LIFT_SINGLE(X)                                                                   \
+#define SIGA_UTIL_LIFT_FUNCTION_SINGLE(X)                                                          \
     []<typename... Args>(Args &&...args)                                                           \
         constexpr                                                                                  \
         static                                                                                     \
@@ -522,7 +518,10 @@ class std::is_bind_expression<siga::util::make_bind_expression<F>> : public std:
     }
 // clang-format on
 
-#define SIGA_UTIL_LIFT(...) SIGA_UTIL_LIFT_SINGLE(SIGA_UTIL_AS_SINGLE(__VA_ARGS__))
+#define SIGA_UTIL_AS_SINGLE(...) __VA_ARGS__
+
+#define SIGA_UTIL_LIFT_FUNCTION(...)                                                               \
+    SIGA_UTIL_LIFT_FUNCTION_SINGLE(SIGA_UTIL_AS_SINGLE(__VA_ARGS__))
 
 // -------------------------------------------------------------------------------------------------
 
@@ -534,7 +533,6 @@ class std::is_bind_expression<siga::util::make_bind_expression<F>> : public std:
 // 2. If `MEMBER` is a niebloid, it'd be called, despite the fact
 //    that `std::invoke` would return a reference to it.
 //    While this is probably fixable, I'm not sure if it's worth the effort
-// 3. FIXME: If `MEMBER` is a template method, the macro won't work because we'd need to write `.template METHOD`
 // 
 // TODO: should we also specify a class name? If so, don't forget that types must be _compatible_
 #define SIGA_UTIL_LIFT_MEMBER_SINGLE(MEMBER) \
@@ -589,5 +587,14 @@ class std::is_bind_expression<siga::util::make_bind_expression<F>> : public std:
         } \
     }
 
-#define SIGA_UTIL_LIFT_MEMBER(...) SIGA_UTIL_LIFT_MEMBER_SINGLE(SIGA_UTIL_AS_SINGLE(__VA_ARGS__))
 // clang-format on
+
+// https://stackoverflow.com/a/77860333/10961484
+#define SIGA_UTIL_MAKE_MEMBER_DETAIL(MEMBER)   MEMBER
+#define SIGA_UTIL_MAKE_MEMBER_DETAIL_MANY(...) template __VA_ARGS__
+
+#define SIGA_UTIL_MAKE_MEMBER_NAME(FIRST, ...)                                                     \
+    SIGA_UTIL_MAKE_MEMBER_DETAIL##__VA_OPT__(_MANY)(FIRST __VA_OPT__(, ) __VA_ARGS__)
+
+#define SIGA_UTIL_LIFT_MEMBER(...)                                                                 \
+    SIGA_UTIL_LIFT_MEMBER_SINGLE(SIGA_UTIL_MAKE_MEMBER_NAME(__VA_ARGS__))
