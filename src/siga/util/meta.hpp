@@ -1,5 +1,9 @@
 #pragma once
 
+#include <algorithm>
+#include <ranges>
+#include <string_view>
+
 namespace siga::util {
 
 // idea from Ed Catmur. usage example: `conceptify<std::is_enum>`

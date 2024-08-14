@@ -1,5 +1,12 @@
 #pragma once
 
+#include <algorithm>
+#include <format>
+#include <memory>
+#include <source_location>
+#include <string>
+#include <string_view>
+
 namespace siga::util {
 
 // https://stackoverflow.com/q/68798717/10961484
@@ -155,7 +162,7 @@ public:
 
 std::string format_source_location(const auto &loc)
 {
-    return fmt::format(
+    return std::format(
         "{}({}:{}) `{}`",
         loc.file_name(),
         loc.line(),

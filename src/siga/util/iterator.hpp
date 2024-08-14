@@ -1,5 +1,8 @@
 #pragma once
 
+#include <concepts>
+#include <string>
+
 namespace siga::util {
 
 template<typename DelimT, typename CharT = char, typename Traits = std::char_traits<CharT>>

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace siga::util {
 
 // multiple inheritance from esft-enabled classes is a pain:

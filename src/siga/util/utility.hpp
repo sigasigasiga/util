@@ -1,5 +1,7 @@
 #pragma once
 
+#include <type_traits>
+
 namespace siga::util {
 
 // `util/utility.hpp` sounds funny, but I was trying to somehow resemble the `<utility>` STL header

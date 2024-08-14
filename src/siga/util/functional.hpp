@@ -1,5 +1,9 @@
 #pragma once
 
+#include <concepts>
+#include <functional>
+#include <utility>
+
 #include "siga/util/meta.hpp"
 #include "siga/util/tuple.hpp"
 #include "siga/util/utility.hpp"
