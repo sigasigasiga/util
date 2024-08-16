@@ -1,8 +1,6 @@
 #pragma once
 
 #include <functional>
-#include <type_traits>
-#include <tuple>
 
 #include <siga/util/functional.hpp>
 #include <siga/util/utility.hpp>
