@@ -2,9 +2,26 @@
 
 #include <type_traits>
 
+#include <siga/util/compat.hpp>
+
 namespace siga::util {
 
 // `util/utility.hpp` sounds funny, but I was trying to somehow resemble the `<utility>` STL header
+
+template<typename T>
+struct [[nodiscard]] no_unique_address_if_empty
+{
+    T value_;
+};
+
+template<typename T>
+requires std::is_empty_v<T>
+struct [[nodiscard]] no_unique_address_if_empty<T>
+{
+    SIGA_UTIL_NO_UNIQUE_ADDRESS T value_;
+};
+
+// -------------------------------------------------------------------------------------------------
 
 class [[nodiscard]] copy_t
 {
