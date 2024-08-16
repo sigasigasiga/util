@@ -4,8 +4,8 @@
 #include <type_traits>
 #include <tuple>
 
-#include "siga/util/functional.hpp"
-#include "siga/util/utility.hpp"
+#include <siga/util/functional.hpp>
+#include <siga/util/utility.hpp>
 
 namespace siga::util {
 

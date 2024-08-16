@@ -4,9 +4,9 @@
 #include <functional>
 #include <utility>
 
-#include "siga/util/meta.hpp"
-#include "siga/util/tuple.hpp"
-#include "siga/util/utility.hpp"
+#include <siga/util/meta.hpp>
+#include <siga/util/tuple.hpp>
+#include <siga/util/utility.hpp>
 
 namespace siga::util {
 
