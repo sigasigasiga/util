@@ -147,39 +147,22 @@ inline constexpr indirect_t indirect;
 // -------------------------------------------------------------------------------------------------
 
 template<typename F>
-class [[nodiscard]] lazy_eval
+class [[nodiscard]] lazy_eval : public storage_base<F>
 {
 public:
-    constexpr lazy_eval(F func) noexcept(std::is_nothrow_move_constructible_v<F>)
-        : func_{std::move(func)}
-    {
-    }
+    using storage_base<F>::storage_base;
 
 public:
     template<typename Self>
     [[nodiscard]] constexpr operator std::invoke_result_t<copy_cv_ref_t<Self, F>>(this Self &&self)
         noexcept(std::is_nothrow_invocable_v<copy_cv_ref_t<Self, F>>)
     {
-        return std::invoke(std::forward<Self>(self).func_);
+        return std::invoke(std::forward<Self>(self).get());
     }
-
-private:
-    F func_;
 };
 
-template<typename F, typename... Args>
-[[nodiscard]] constexpr auto lazy_eval_bind(F &&func, Args &&...args) //
-    noexcept(
-        is_nothrow_decay_copy_constructible_v<F> &&
-        (... && is_nothrow_decay_copy_constructible_v<Args>)
-    )
-{
-    if constexpr(sizeof...(args) == 0) {
-        return lazy_eval(std::forward<F>(func));
-    } else {
-        return lazy_eval(std::bind_front(std::forward<F>(func), std::forward<Args>(args)...));
-    }
-}
+template<typename F>
+lazy_eval(F) -> lazy_eval<F>;
 
 // -------------------------------------------------------------------------------------------------
 
@@ -204,39 +187,36 @@ inline constexpr get_reference_t get_reference;
 // -------------------------------------------------------------------------------------------------
 
 template<typename F>
-class [[nodiscard]] get_reference_wrap
+class [[nodiscard]] get_reference_wrap : public storage_base<F>
 {
 public:
-    constexpr get_reference_wrap(F fn) noexcept(std::is_nothrow_move_constructible_v<F>)
-        : fn_{std::move(fn)}
-    {
-    }
+    using storage_base<F>::storage_base;
 
 public:
     // clang-format off
     template<typename Self, typename... Args>
     requires requires(Self &&self, Args &&...args) {
         std::invoke(
-            std::forward<Self>(self).fn_,
+            std::forward<Self>(self).get(),
             get_reference(std::forward<Args>(args))...
         );
     }
     constexpr decltype(auto) operator()(this Self &&self, Args &&...args)
         noexcept(noexcept(std::invoke(
-            std::forward<Self>(self).fn_,
+            std::forward<Self>(self).get(),
             get_reference(std::forward<Args>(args))...
         )))
     {
         return std::invoke(
-            std::forward<Self>(self).fn_,
+            std::forward<Self>(self).get(),
             get_reference(std::forward<Args>(args))...
         );
     }
     // clang-format on
-
-private:
-    F fn_;
 };
+
+template<typename F>
+get_reference_wrap(F) -> get_reference_wrap<F>;
 
 // -------------------------------------------------------------------------------------------------
 
@@ -255,27 +235,21 @@ public:
 // -------------------------------------------------------------------------------------------------
 
 template<typename T>
-class [[nodiscard]] return_value
+class [[nodiscard]] return_value : public storage_base<T>
 {
 public:
     using return_type = std::decay_t<std::unwrap_reference_t<T>>;
 
 public:
-    constexpr return_value(T data) noexcept(std::is_nothrow_move_constructible_v<T>)
-        : data_{std::move(data)}
-    {
-    }
+    using storage_base<T>::storage_base;
 
 public:
     template<typename Self>
     [[nodiscard]] constexpr return_type operator()(this Self &&self)
         noexcept(std::is_nothrow_constructible_v<return_type, copy_cv_ref_t<Self, T>>)
     {
-        return std::forward<Self>(self).data_;
+        return std::forward<Self>(self).get();
     }
-
-private:
-    T data_;
 };
 
 template<>
@@ -288,29 +262,29 @@ public:
     constexpr return_type operator()() noexcept {}
 };
 
+template<typename T>
+return_value(T) -> return_value<T>;
+
 // -------------------------------------------------------------------------------------------------
 
 template<std::invocable F>
-class [[nodiscard]] ignore_args_wrap
+class [[nodiscard]] ignore_args_wrap : public storage_base<F>
 {
 public:
-    constexpr ignore_args_wrap(F func) noexcept(std::is_nothrow_move_constructible_v<F>)
-        : func_{std::move(func)}
-    {
-    }
+    using storage_base<F>::storage_base;
 
 public:
     template<typename Self>
-    requires requires(Self &&self) { std::invoke(std::forward<Self>(self).func_); }
+    requires std::invocable<copy_cv_ref_t<Self, F>>
     constexpr decltype(auto) operator()(this Self &&self, auto &&...)
-        noexcept(noexcept(std::invoke(std::forward<Self>(self).func_)))
+        noexcept(std::is_nothrow_invocable_v<copy_cv_ref_t<Self, F>>)
     {
-        return std::invoke(std::forward<Self>(self).func_);
+        return std::invoke(std::forward<Self>(self).get());
     }
-
-private:
-    F func_;
 };
+
+template<typename F>
+ignore_args_wrap(F) -> ignore_args_wrap<F>;
 
 // -------------------------------------------------------------------------------------------------
 
