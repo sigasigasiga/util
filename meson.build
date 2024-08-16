@@ -5,3 +5,12 @@ siga_util_dep = declare_dependency(
 )
 
 meson.override_dependency('siga-util', siga_util_dep)
+
+test(
+  'stored_func_invoker',
+  executable(
+    'asdf',
+    'test/stored_func_invoker.cpp',
+    dependencies: [siga_util_dep]
+  )
+)
