@@ -5,6 +5,7 @@
 #include <utility>
 
 #include <siga/util/meta.hpp>
+#include <siga/util/storage_base.hpp>
 #include <siga/util/tuple.hpp>
 #include <siga/util/utility.hpp>
 
@@ -313,119 +314,20 @@ private:
 
 // -------------------------------------------------------------------------------------------------
 
-template<typename Fn>
-class [[nodiscard]] func_storage_base : private no_unique_address_if_empty<Fn>
-{
-private:
-    static_assert(!std::same_as<Fn, std::in_place_t>);
-    using storage = no_unique_address_if_empty<Fn>;
-
-public:
-    // NOTE: all these constructors are heavily inspired by the constructors of `std::optional`.
-    // Each constructor is annotated according to the `optional`'s constructor on the cppreference:
-    // https://en.cppreference.com/w/cpp/utility/optional/optional
-
-    // (1)
-    constexpr func_storage_base() = default;
-
-    // (2)
-    constexpr func_storage_base(const func_storage_base &) = default;
-
-    // (3)
-    constexpr func_storage_base(func_storage_base &&) = default;
-
-    // (4) and (5) probably shouldn't be implemented
-
-    // (6)
-    template<typename... Args>
-    requires std::is_constructible_v<Fn, Args...>
-    constexpr explicit func_storage_base(std::in_place_t, Args &&...args)
-        noexcept(std::is_nothrow_constructible_v<Fn, Args...>) // strengthened
-        : storage{.value_ = Fn(std::forward<Args>(args)...)}
-    {
-    }
-
-    // (7)
-    template<typename U, typename... Args>
-    requires std::is_constructible_v<Fn, std::initializer_list<U> &, Args...>
-    constexpr explicit func_storage_base(
-        std::in_place_t,
-        std::initializer_list<U> ilist,
-        Args &&...args
-    )
-        noexcept(
-            std::is_nothrow_constructible_v<Fn, std::initializer_list<U> &, Args...> // strengthened
-        )
-        : storage{.value_ = Fn(ilist, std::forward<Args>(args)...)}
-    {
-    }
-
-    // (8)
-    // clang-format off
-    template<typename UFn = Fn>
-    requires
-        std::is_constructible_v<Fn, UFn &&> &&
-        (!std::same_as<std::remove_cvref_t<UFn>, std::in_place_t>) &&
-        (!std::same_as<std::remove_cvref_t<UFn>, func_storage_base>)
-    explicit(!std::is_convertible_v<UFn &&, Fn>)
-    constexpr
-    func_storage_base(UFn &&fn)
-        noexcept(std::is_nothrow_constructible_v<Fn, UFn>) // strengthened
-        : storage{ .value_ = Fn(std::forward<UFn>(fn)) }
-    {
-    }
-    // clang-format on
-
-protected:
-    // clang-format off
-    template<
-        typename Self,
-        typename... Args,
-        typename FixedType = copy_cv_ref_t<Self, func_storage_base>
-    >
-    requires requires(Self &&self, Args &&...args) {
-        std::invoke(static_cast<FixedType>(self).value_, std::forward<Args>(args)...);
-    }
-    constexpr decltype(auto) invoke_underlying_fn(this Self &&self, Args &&...args)
-        noexcept(
-            noexcept(std::invoke(static_cast<FixedType>(self).value_, std::forward<Args>(args)...))
-        )
-    {
-        return std::invoke(static_cast<FixedType>(self).value_, std::forward<Args>(args)...);
-    }
-    // clang-format on
-};
-
-// As in `optional`, we have a single deducing guide here
-// https://en.cppreference.com/w/cpp/utility/optional/deduction_guides
 template<typename F>
-func_storage_base(F) -> func_storage_base<F>;
-
-// -------------------------------------------------------------------------------------------------
-
-template<typename F>
-class [[nodiscard]] stored_func_invoker : public func_storage_base<F>
+class [[nodiscard]] stored_func_invoker : public storage_base<F>
 {
 public:
-    using func_storage_base<F>::func_storage_base;
+    using storage_base<F>::storage_base;
 
 public:
-    // clang-format off
     template<typename Self, typename... Args>
-    requires requires(Self &&self, Args &&...args) {
-        self.invoke_underlying_fn(std::forward<Args>(args)...);
-    }
+    requires std::invocable<copy_cv_ref_t<Self, F>, Args...>
     constexpr decltype(auto) operator()(this Self &&self, Args &&...args)
-        noexcept(noexcept(
-            self.invoke_underlying_fn(std::forward<Args>(args)...)
-        ))
+        noexcept(std::is_nothrow_invocable_v<copy_cv_ref_t<Self, F>, Args...>)
     {
-        return self.invoke_underlying_fn(std::forward<Args>(args)...);
+        return std::invoke(std::forward<Self>(self).get(), std::forward<Args>(args)...);
     }
-    // clang-format on
-
-private:
-    F func_;
 };
 
 template<typename F>

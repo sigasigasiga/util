@@ -6,6 +6,7 @@
 #include <siga/util/meta.hpp>
 #include <siga/util/scoped.hpp>
 #include <siga/util/shared_from_this_base.hpp>
+#include <siga/util/storage_base.hpp>
 #include <siga/util/toy.hpp>
 #include <siga/util/tuple.hpp>
 #include <siga/util/utility.hpp>
