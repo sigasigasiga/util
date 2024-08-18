@@ -72,4 +72,23 @@ auto make_ostream_joiner(std::basic_ostream<CharT, Traits> &os, DelimT &&delim)
     return ostream_joiner<std::decay_t<DelimT>, CharT, Traits>{os, std::forward<DelimT>(delim)};
 }
 
+// -------------------------------------------------------------------------------------------------
+
+template<typename Container>
+auto rerase(Container &container, std::reverse_iterator<typename Container::iterator> rit)
+{
+    ++rit;
+    return std::make_reverse_iterator(container.erase(rit.base()));
+}
+
+template<typename Container>
+auto rerase(
+    Container &container,
+    std::reverse_iterator<typename Container::iterator> rbegin,
+    std::reverse_iterator<typename Container::iterator> rend
+)
+{
+    return std::make_reverse_iterator(container.erase(rend.base(), rbegin.base()));
+}
+
 } // namespace siga::util
