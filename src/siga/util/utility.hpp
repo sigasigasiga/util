@@ -3,6 +3,7 @@
 #include <type_traits>
 
 #include <siga/util/compat.hpp>
+#include <siga/util/meta.hpp>
 
 namespace siga::util {
 
@@ -20,6 +21,25 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 {
     SIGA_UTIL_NO_UNIQUE_ADDRESS T value_;
 };
+
+// -------------------------------------------------------------------------------------------------
+
+// https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r7.html#the-shadowing-mitigation-private-inheritance-problem
+template<typename From, typename To>
+constexpr auto &&forward_self(std::remove_reference_t<From> &self) noexcept
+{
+    using ret_t = copy_cv_ref_t<From &&, To>;
+    return (ret_t)self;
+}
+
+template<typename From, typename To>
+static constexpr auto &&forward_self(std::remove_reference_t<From> &&self) noexcept
+{
+    static_assert(!std::is_lvalue_reference_v<From>, "Cannot forward an rvalue as an lvalue");
+
+    using ret_t = copy_cv_ref_t<From &&, To>;
+    return (ret_t)self;
+}
 
 // -------------------------------------------------------------------------------------------------
 

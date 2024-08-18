@@ -147,7 +147,7 @@ inline constexpr indirect_t indirect;
 // -------------------------------------------------------------------------------------------------
 
 template<typename F>
-class [[nodiscard]] lazy_eval : public storage_base<F>
+class [[nodiscard]] lazy_eval : private storage_base<F>
 {
 public:
     using storage_base<F>::storage_base;
@@ -157,7 +157,7 @@ public:
     [[nodiscard]] constexpr operator std::invoke_result_t<copy_cv_ref_t<Self, F>>(this Self &&self)
         noexcept(std::is_nothrow_invocable_v<copy_cv_ref_t<Self, F>>)
     {
-        return std::invoke(std::forward<Self>(self).get());
+        return std::invoke(forward_self<Self, lazy_eval>(self).value());
     }
 };
 
@@ -187,7 +187,7 @@ inline constexpr get_reference_t get_reference;
 // -------------------------------------------------------------------------------------------------
 
 template<typename F>
-class [[nodiscard]] get_reference_wrap : public storage_base<F>
+class [[nodiscard]] get_reference_wrap : private storage_base<F>
 {
 public:
     using storage_base<F>::storage_base;
@@ -197,18 +197,18 @@ public:
     template<typename Self, typename... Args>
     requires requires(Self &&self, Args &&...args) {
         std::invoke(
-            std::forward<Self>(self).get(),
+            forward_self<Self, get_reference_wrap>(self).value(),
             get_reference(std::forward<Args>(args))...
         );
     }
     constexpr decltype(auto) operator()(this Self &&self, Args &&...args)
         noexcept(noexcept(std::invoke(
-            std::forward<Self>(self).get(),
+            forward_self<Self, get_reference_wrap>(self).value(),
             get_reference(std::forward<Args>(args))...
         )))
     {
         return std::invoke(
-            std::forward<Self>(self).get(),
+            forward_self<Self, get_reference_wrap>(self).value(),
             get_reference(std::forward<Args>(args))...
         );
     }
@@ -235,7 +235,7 @@ public:
 // -------------------------------------------------------------------------------------------------
 
 template<typename T>
-class [[nodiscard]] return_value : public storage_base<T>
+class [[nodiscard]] return_value : private storage_base<T>
 {
 public:
     using return_type = std::decay_t<std::unwrap_reference_t<T>>;
@@ -248,7 +248,7 @@ public:
     [[nodiscard]] constexpr return_type operator()(this Self &&self)
         noexcept(std::is_nothrow_constructible_v<return_type, copy_cv_ref_t<Self, T>>)
     {
-        return std::forward<Self>(self).get();
+        return forward_self<Self, return_value>(self).value();
     }
 };
 
@@ -268,7 +268,7 @@ return_value(T) -> return_value<T>;
 // -------------------------------------------------------------------------------------------------
 
 template<std::invocable F>
-class [[nodiscard]] ignore_args_wrap : public storage_base<F>
+class [[nodiscard]] ignore_args_wrap : private storage_base<F>
 {
 public:
     using storage_base<F>::storage_base;
@@ -279,7 +279,7 @@ public:
     constexpr decltype(auto) operator()(this Self &&self, auto &&...)
         noexcept(std::is_nothrow_invocable_v<copy_cv_ref_t<Self, F>>)
     {
-        return std::invoke(std::forward<Self>(self).get());
+        return std::invoke(forward_self<Self, ignore_args_wrap>(self).value());
     }
 };
 
@@ -289,7 +289,7 @@ ignore_args_wrap(F) -> ignore_args_wrap<F>;
 // -------------------------------------------------------------------------------------------------
 
 template<typename F>
-class [[nodiscard]] stored_func_invoker : public storage_base<F>
+class [[nodiscard]] stored_func_invoker : private storage_base<F>
 {
 public:
     using storage_base<F>::storage_base;
@@ -300,7 +300,10 @@ public:
     constexpr decltype(auto) operator()(this Self &&self, Args &&...args)
         noexcept(std::is_nothrow_invocable_v<copy_cv_ref_t<Self, F>, Args...>)
     {
-        return std::invoke(std::forward<Self>(self).get(), std::forward<Args>(args)...);
+        return std::invoke(
+            forward_self<Self, stored_func_invoker>(self).value(),
+            std::forward<Args>(args)...
+        );
     }
 };
 

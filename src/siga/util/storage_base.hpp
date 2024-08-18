@@ -110,11 +110,11 @@ public:
     }
     // clang-format on
 
-public:
+protected:
     template<typename Self>
-    constexpr decltype(auto) get(this Self &&self) noexcept
+    constexpr auto &&value(this Self &&self) noexcept
     {
-        return (std::forward<Self>(self).value_);
+        return forward_self<Self, storage_base>(self).value_;
     }
 };
 
