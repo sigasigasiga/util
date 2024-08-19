@@ -2,13 +2,29 @@
 
 namespace {
 
+constexpr void test_storage_assignment()
+{
+    // it:
+    // 1. compiles
+    // 2. without warnings
+    siga::util::storage_base<int> i;
+    i = 3;
+    i = 3.0f;
+    auto copy = i;
+    i = copy;
+
+    siga::util::storage_base<double> d;
+    i = d;
+    i = std::move(d);
+}
+
 template<typename T>
 constexpr volatile T &as_volatile(T &value)
 {
     return value;
 }
 
-constexpr bool test_cvref()
+bool test_cvref()
 {
     class tester
     {
@@ -24,6 +40,15 @@ constexpr bool test_cvref()
     };
 
     constexpr siga::util::stored_func_invoker inv{tester{}};
+    auto copy = inv;
+    copy = inv;
+    static_assert(std::same_as<const decltype(copy), decltype(inv)>);
+
+    siga::util::stored_func_invoker<std::function<int()>> fn_inv;
+    fn_inv = inv;
+    fn_inv = [] {
+        return 3;
+    };
 
     // clang-format off
     return
@@ -43,5 +68,6 @@ constexpr bool test_cvref()
 
 int main()
 {
+    std::ignore = test_storage_assignment;
     return test_cvref();
 }
