@@ -59,6 +59,9 @@ inline constexpr copy_t copy;
 // -------------------------------------------------------------------------------------------------
 
 template<typename T>
+concept decay_copy_constructible = std::constructible_from<std::decay_t<T>, T &&>;
+
+template<typename T>
 class is_decay_copy_constructible : public std::is_constructible<std::decay_t<T>, T &&>
 {};
 

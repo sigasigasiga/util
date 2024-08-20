@@ -3,16 +3,19 @@
 #include <optional>
 #include <utility>
 
+#include <siga/util/utility.hpp>
+
 namespace siga::util {
 
-class as_optional_t
+class [[nodiscard]] as_optional_t
 {
 public:
-    template<typename T>
-    static constexpr std::optional<T> operator()(T *ptr)
+    template<std::copy_constructible T>
+    [[nodiscard]] static constexpr std::optional<std::decay_t<T>> operator()(T *ptr)
+        noexcept(std::is_nothrow_copy_constructible_v<T>)
     {
         if(ptr) {
-            return *ptr;
+            return std::make_optional(*ptr);
         } else {
             return std::nullopt;
         }
@@ -23,14 +26,15 @@ inline constexpr as_optional_t as_optional;
 
 // -------------------------------------------------------------------------------------------------
 
-class as_optional_move_t
+class [[nodiscard]] as_optional_move_t
 {
 public:
-    template<typename T>
-    static constexpr std::optional<T> operator()(T *ptr)
+    template<std::move_constructible T>
+    [[nodiscard]] static constexpr std::optional<std::decay_t<T>> operator()(T *ptr)
+        noexcept(std::is_nothrow_move_constructible_v<T>)
     {
         if(ptr) {
-            return std::move(*ptr);
+            return std::make_optional(std::move(*ptr));
         } else {
             return std::nullopt;
         }
@@ -42,14 +46,15 @@ inline constexpr as_optional_move_t as_optional_move;
 // -------------------------------------------------------------------------------------------------
 
 template<typename Like>
-class as_optional_like_t
+class [[nodiscard]] as_optional_like_t
 {
 public:
-    template<typename T>
-    static constexpr std::optional<T> operator()(T *ptr)
+    template<decay_copy_constructible T>
+    [[nodiscard]] static constexpr std::optional<std::decay_t<T>> operator()(T *ptr)
+        noexcept(is_nothrow_decay_copy_constructible_v<T>)
     {
         if(ptr) {
-            return std::forward_like<Like>(*ptr);
+            return std::make_optional(std::forward_like<Like>(*ptr));
         } else {
             return std::nullopt;
         }
