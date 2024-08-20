@@ -70,7 +70,7 @@ constexpr auto my_bind_back(Args &&...args)
 template<typename... Args>
 constexpr auto bind_back(Args &&...args)
 {
-    return my_bind_back(std::forward<Args>(args)...);
+    return detail::my_bind_back(std::forward<Args>(args)...);
 }
 
 } // namespace siga::util
