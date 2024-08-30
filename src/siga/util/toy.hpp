@@ -122,27 +122,6 @@ inline constexpr ignore_t ignore;
 // -------------------------------------------------------------------------------------------------
 
 template<typename T>
-[[clang::always_inline]] void do_not_optimize(T &&value)
-{
-    // `volatile` prevents the instruction from being deleted
-    asm volatile(
-
-        "" // empty asm code
-
-        : "+r,m"(value) // input param, where:
-                        // `+` -- input/output operand
-                        // `r` -- general-purpose register operand
-                        // `m` -- memory operand with arbitrary addressing mode
-
-        : // output param, empty
-
-        : "memory" // clobber list, clobbers memory
-    );
-}
-
-// -------------------------------------------------------------------------------------------------
-
-template<typename T>
 class [[nodiscard]] type_tag
 {
 public:
