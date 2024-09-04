@@ -11,11 +11,21 @@ siga_util_dep = declare_dependency(
 meson.override_dependency('siga-util', siga_util_dep)
 
 if get_option('tests').enabled()
-  stored_func_invoker_test = executable(
+  test(
+    'stored_func_invoker',
+    executable(
       'stored_func_invoker',
       'test/stored_func_invoker.cpp',
       dependencies: [siga_util_dep]
+    )
   )
 
-  test('stored_func_invoker', stored_func_invoker_test)
+  test(
+    'expected',
+    executable(
+      'expected',
+      'test/expected.cpp',
+      dependencies: [siga_util_dep]
+    )
+  )
 endif
