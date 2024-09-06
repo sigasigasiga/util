@@ -28,4 +28,13 @@ if get_option('tests').enabled()
       dependencies: [siga_util_dep]
     )
   )
+
+  test(
+    'bitset',
+    executable(
+      'bitset',
+      'test/bitset.cpp',
+      dependencies: [siga_util_dep]
+    )
+  )
 endif
