@@ -4,6 +4,7 @@
 #include <siga/util/bitset.hpp>
 #include <siga/util/cctype.hpp>
 #include <siga/util/compat.hpp>
+#include <siga/util/expected.hpp>
 #include <siga/util/first_flag.hpp>
 #include <siga/util/flag_set.hpp>
 #include <siga/util/functional.hpp>
