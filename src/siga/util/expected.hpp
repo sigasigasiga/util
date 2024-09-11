@@ -7,11 +7,11 @@ namespace siga::util {
 
 // This is customizable in order to use `beman::optional26`
 template<template<typename...> typename Optional = std::optional>
-class ok_or_t
+class [[nodiscard]] ok_or_t
 {
 public:
     template<typename T, typename E>
-    static constexpr std::expected<T, E> operator()(Optional<T> &value, E &&err)
+    [[nodiscard]] static constexpr std::expected<T, E> operator()(Optional<T> &value, E &&err)
     {
         if(value) {
             return *value;
@@ -21,7 +21,7 @@ public:
     }
 
     template<typename T, typename E>
-    static constexpr std::expected<T, E> operator()(const Optional<T> &value, E &&err)
+    [[nodiscard]] static constexpr std::expected<T, E> operator()(const Optional<T> &value, E &&err)
     {
         if(value) {
             return *value;
@@ -31,7 +31,7 @@ public:
     }
 
     template<typename T, typename E>
-    static constexpr std::expected<T, E> operator()(Optional<T> &&value, E &&err)
+    [[nodiscard]] static constexpr std::expected<T, E> operator()(Optional<T> &&value, E &&err)
     {
         if(value) {
             return *std::move(value);
@@ -41,7 +41,8 @@ public:
     }
 
     template<typename T, typename E>
-    static constexpr std::expected<T, E> operator()(const Optional<T> &&value, E &&err)
+    [[nodiscard]] static constexpr auto operator()(const Optional<T> &&value, E &&err) //
+        -> std::expected<T, E>
     {
         if(value) {
             return *std::move(value);
@@ -55,11 +56,11 @@ inline constexpr ok_or_t ok_or;
 
 // This is customizable in order to use `beman::optional26`
 template<template<typename...> typename Optional = std::optional>
-class ok_or_else_t
+class [[nodiscard]] ok_or_else_t
 {
 public:
     template<typename T, typename ErrF, typename ErrT = std::invoke_result_t<ErrF>>
-    static constexpr std::expected<T, ErrT> operator()(Optional<T> &value, ErrF &&fn)
+    [[nodiscard]] static constexpr std::expected<T, ErrT> operator()(Optional<T> &value, ErrF &&fn)
     {
         if(value) {
             return *value;
@@ -69,7 +70,8 @@ public:
     }
 
     template<typename T, typename ErrF, typename ErrT = std::invoke_result_t<ErrF>>
-    static constexpr std::expected<T, ErrT> operator()(const Optional<T> &value, ErrF &&fn)
+    [[nodiscard]] static constexpr auto operator()(const Optional<T> &value, ErrF &&fn) //
+        -> std::expected<T, ErrT>
     {
         if(value) {
             return *value;
@@ -79,7 +81,7 @@ public:
     }
 
     template<typename T, typename ErrF, typename ErrT = std::invoke_result_t<ErrF>>
-    static constexpr std::expected<T, ErrT> operator()(Optional<T> &&value, ErrF &&fn)
+    [[nodiscard]] static constexpr std::expected<T, ErrT> operator()(Optional<T> &&value, ErrF &&fn)
     {
         if(value) {
             return *std::move(value);
@@ -89,7 +91,8 @@ public:
     }
 
     template<typename T, typename ErrF, typename ErrT = std::invoke_result_t<ErrF>>
-    static constexpr std::expected<T, ErrT> operator()(const Optional<T> &&value, ErrF &&fn)
+    [[nodiscard]] static constexpr auto operator()(const Optional<T> &&value, ErrF &&fn) //
+        -> std::expected<T, ErrT>
     {
         if(value) {
             return *std::move(value);

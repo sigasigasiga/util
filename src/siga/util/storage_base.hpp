@@ -188,7 +188,7 @@ public:
 
 protected:
     template<typename Self>
-    constexpr auto &&value(this Self &&self) noexcept
+    [[nodiscard]] constexpr auto &&value(this Self &&self) noexcept
     {
         return forward_self<Self, storage_base>(self).value_;
     }

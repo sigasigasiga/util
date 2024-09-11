@@ -34,11 +34,11 @@ public:
     friend constexpr flag_set operator~(flag_set set) noexcept { return ~set.value_; }
 
 public:
-    constexpr value_type value() const noexcept { return value_; }
+    [[nodiscard]] constexpr value_type value() const noexcept { return value_; }
 
     template<typename To>
     requires std::same_as<To, value_type> || std::same_as<To, bool>
-    explicit constexpr operator To() const noexcept
+    [[nodiscard]] explicit constexpr operator To() const noexcept
     {
         return value();
     }

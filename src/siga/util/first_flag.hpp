@@ -10,7 +10,8 @@ public:
     constexpr first_flag() = default;
 
 public:
-    constexpr bool get() noexcept { return std::exchange(flag_, false); }
+    [[nodiscard]] constexpr bool get() noexcept { return std::exchange(flag_, false); }
+    [[nodiscard]] constexpr bool operator()() noexcept { return get(); }
 
 private:
     bool flag_ = true;

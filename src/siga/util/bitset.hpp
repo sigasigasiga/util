@@ -5,7 +5,8 @@
 namespace siga::util {
 
 template<std::convertible_to<bool>... Ts>
-constexpr auto make_bitset(Ts &&...values)
+[[nodiscard]] constexpr auto make_bitset(Ts &&...values)
+    noexcept((... && std::is_nothrow_convertible_v<Ts, bool>))
 {
     constexpr std::size_t count = sizeof...(Ts);
     std::bitset<count> ret;
