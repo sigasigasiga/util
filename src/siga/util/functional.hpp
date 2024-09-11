@@ -234,6 +234,18 @@ public:
 
 // -------------------------------------------------------------------------------------------------
 
+class [[nodiscard]] throw_op
+{
+public:
+    template<typename T>
+    [[noreturn]] void operator()(T &&value)
+    {
+        throw std::forward<T>(value);
+    }
+};
+
+// -------------------------------------------------------------------------------------------------
+
 template<typename T>
 class [[nodiscard]] return_value : private storage_base<T>
 {
