@@ -49,15 +49,6 @@ template<typename T>
 
 // -------------------------------------------------------------------------------------------------
 
-template<typename T>
-[[nodiscard]] constexpr auto throw_(T &&value)
-    noexcept(noexcept(bind_front_unwrap(throw_op(), std::forward<T>(value))))
-{
-    return bind_front_unwrap(throw_op(), std::forward<T>(value));
-}
-
-// -------------------------------------------------------------------------------------------------
-
 template<typename Container>
 [[nodiscard]] constexpr auto index_in(Container &&container)
     noexcept(noexcept(bind_front_unwrap(subscript(), std::forward<Container>(container))))

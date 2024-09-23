@@ -234,7 +234,7 @@ public:
 
 // -------------------------------------------------------------------------------------------------
 
-class [[nodiscard]] throw_op
+class [[nodiscard]] throw_exception
 {
 public:
     template<typename T>
