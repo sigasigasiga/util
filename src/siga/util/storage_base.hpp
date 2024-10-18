@@ -134,8 +134,8 @@ public:
         // cppref states that there are two more requirements:
         // 1. `std::is_constructible_v<T, U>`,
         //    but it is only needed for the `optional`
-        // 2. `(!std::is_scalar_v<T> || !std::same_as<std::decay_t<U>, T>)`,
-        //    but honestly I don't get what it is for
+        // 2. `(!std::is_scalar_v<T> || !std::same_as<std::decay_t<U>, T>)`
+        //    TODO: I don't get what it is for
     constexpr storage_base &operator=(U &&value)
         noexcept(std::is_nothrow_assignable_v<T, U>) // strengthened
     {
