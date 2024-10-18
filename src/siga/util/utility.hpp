@@ -28,6 +28,7 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 template<typename From, typename To>
 constexpr auto &&forward_self(std::remove_reference_t<From> &self) noexcept
 {
+    static_assert(std::same_as<std::remove_cvref_t<To>, To>);
     using ret_t = copy_cv_ref_t<From &&, To>;
     return (ret_t)self;
 }
@@ -35,6 +36,7 @@ constexpr auto &&forward_self(std::remove_reference_t<From> &self) noexcept
 template<typename From, typename To>
 static constexpr auto &&forward_self(std::remove_reference_t<From> &&self) noexcept
 {
+    static_assert(std::same_as<std::remove_cvref_t<To>, To>);
     static_assert(!std::is_lvalue_reference_v<From>, "Cannot forward an rvalue as an lvalue");
 
     using ret_t = copy_cv_ref_t<From &&, To>;
