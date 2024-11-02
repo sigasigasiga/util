@@ -37,4 +37,13 @@ if get_option('tests').enabled()
       dependencies: [siga_util_dep]
     )
   )
+
+  test(
+    'read_only_value',
+    executable(
+      'read_only_value',
+      'test/read_only_value.cpp',
+      dependencies: [siga_util_dep]
+    )
+  )
 endif
