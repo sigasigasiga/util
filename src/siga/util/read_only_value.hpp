@@ -19,6 +19,11 @@ template<typename T>
 class read_only_value : private storage_base<T>
 {
 public:
+    static_assert(std::is_object_v<T>);
+    static_assert(!std::is_array_v<T>);
+    static_assert(!std::is_const_v<T>);
+
+public:
     template<typename... Args>
     requires std::constructible_from<storage_base<T>, Args...>
     constexpr read_only_value(Args &&...args)
@@ -40,7 +45,7 @@ public:
     // this way it'd be easier to notice that the value would be moved-from after the operation.
     //
     // However, it's not consistent with STL -- `unique_ptr` also has lvalue release
-    [[nodiscard]] constexpr T &&release() && noexcept { return std::move(*this).value(); }
+    [[nodiscard]] constexpr T release() && noexcept { return std::move(*this).value(); }
 };
 
 template<typename T>
