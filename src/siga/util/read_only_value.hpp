@@ -24,13 +24,7 @@ public:
     static_assert(!std::is_const_v<T>);
 
 public:
-    template<typename... Args>
-    requires std::constructible_from<storage_base<T>, Args...>
-    constexpr read_only_value(Args &&...args)
-        noexcept(std::is_nothrow_constructible_v<storage_base<T>, Args...>)
-        : storage_base<T>(std::forward<Args>(args)...)
-    {
-    }
+    using storage_base<T>::storage_base;
 
     constexpr read_only_value(const read_only_value &) = default;
     constexpr read_only_value(read_only_value &&) = default;
