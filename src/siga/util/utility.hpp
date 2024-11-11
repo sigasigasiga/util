@@ -42,6 +42,8 @@ concept forward_ref = without_cvref<T> && std::convertible_to<U &&, copy_cv_ref_
 //     // ...
 // }
 // ```
+//
+// FIXME: `unwrap_forward_ref<std::string>("hello")` returns a dangling reference!!!
 template<typename T, typename U>
 [[nodiscard]] constexpr copy_cv_ref_t<U, T> unwrap_forward_ref(U &&v) noexcept
 {
