@@ -12,10 +12,10 @@ meson.override_dependency('siga-util', siga_util_dep)
 
 if get_option('tests').enabled()
   test(
-    'stored_func_invoker',
+    'bitset',
     executable(
-      'stored_func_invoker',
-      'test/stored_func_invoker.cpp',
+      'bitset',
+      'test/bitset.cpp',
       dependencies: [siga_util_dep]
     )
   )
@@ -30,10 +30,10 @@ if get_option('tests').enabled()
   )
 
   test(
-    'bitset',
+    'forward_ref',
     executable(
-      'bitset',
-      'test/bitset.cpp',
+      'forward_ref',
+      'test/forward_ref.cpp',
       dependencies: [siga_util_dep]
     )
   )
@@ -43,6 +43,15 @@ if get_option('tests').enabled()
     executable(
       'read_only_value',
       'test/read_only_value.cpp',
+      dependencies: [siga_util_dep]
+    )
+  )
+
+  test(
+    'stored_func_invoker',
+    executable(
+      'stored_func_invoker',
+      'test/stored_func_invoker.cpp',
       dependencies: [siga_util_dep]
     )
   )

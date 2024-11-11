@@ -13,11 +13,6 @@ concept conceptify = Trait<T>::value;
 
 // -------------------------------------------------------------------------------------------------
 
-template<typename From, typename To>
-concept decayable_to = std::same_as<std::decay_t<From>, To>;
-
-// -------------------------------------------------------------------------------------------------
-
 template<typename T, template<typename...> typename Trait, template<typename...> typename... Rest>
 class combine_traits
 {

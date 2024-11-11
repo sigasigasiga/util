@@ -24,6 +24,33 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 
 // -------------------------------------------------------------------------------------------------
 
+template<typename T>
+concept without_cvref = std::same_as<std::remove_cvref_t<T>, T>;
+
+// -------------------------------------------------------------------------------------------------
+
+template<typename U, typename T>
+concept forward_ref = without_cvref<T> && std::convertible_to<U &&, copy_cv_ref_t<U &&, T>>;
+
+// Implicitly converts `U` to `T` preserving cvref
+// Usage:
+// ```
+// template<forward_ref<std::istream> IstreamFwd>
+// void foo(IstreamFwd &&is_fwd)
+// {
+//     auto &&is = unwrap_forward_ref<std::istream>(std::forward<IstreamFwd>(is_fwd));
+//     // ...
+// }
+// ```
+template<typename T, typename U>
+[[nodiscard]] copy_cv_ref_t<U, T> unwrap_forward_ref(U &&v)
+{
+    static_assert(without_cvref<T>);
+    return std::forward<U>(v);
+}
+
+// -------------------------------------------------------------------------------------------------
+
 // https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r7.html#the-shadowing-mitigation-private-inheritance-problem
 template<typename From, typename To>
 constexpr auto &&forward_self(std::remove_reference_t<From> &self) noexcept
