@@ -43,7 +43,7 @@ concept forward_ref = without_cvref<T> && std::convertible_to<U &&, copy_cv_ref_
 // }
 // ```
 template<typename T, typename U>
-[[nodiscard]] copy_cv_ref_t<U, T> unwrap_forward_ref(U &&v)
+[[nodiscard]] constexpr copy_cv_ref_t<U, T> unwrap_forward_ref(U &&v) noexcept
 {
     static_assert(without_cvref<T>);
     return std::forward<U>(v);
@@ -61,7 +61,7 @@ constexpr auto &&forward_self(std::remove_reference_t<From> &self) noexcept
 }
 
 template<typename From, typename To>
-static constexpr auto &&forward_self(std::remove_reference_t<From> &&self) noexcept
+constexpr auto &&forward_self(std::remove_reference_t<From> &&self) noexcept
 {
     static_assert(std::same_as<std::remove_cvref_t<To>, To>);
     static_assert(!std::is_lvalue_reference_v<From>, "Cannot forward an rvalue as an lvalue");
