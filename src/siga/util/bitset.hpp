@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bitset>
+#include <type_traits>
 
 namespace siga::util {
 
