@@ -31,16 +31,6 @@ int main()
     foo(iss);
     foo(std::istringstream{});
 
-    static_assert(test_explicitness<false>);
+    static_assert(!test_explicitness<false>);
     static_assert(!test_explicitness<true>);
-
-    // TODO: This won't compile because we require that:
-    // 1. `X &` converts to `Y &`
-    // 2. `X &&` converts to `Y &&`
-    //
-    // That is, `X &&` conversion to `Y &` is currently prohibited.
-    // I'm not sure if this is desired. If it isn't, I don't know how to implement such conversion
-#if 0
-    foo(conditional_converter<false>{});
-#endif
 }

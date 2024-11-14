@@ -29,10 +29,11 @@ concept without_cvref = std::same_as<std::remove_cvref_t<T>, T>;
 
 // -------------------------------------------------------------------------------------------------
 
-template<typename U, typename T>
-concept forward_ref = without_cvref<T> && std::convertible_to<U &&, copy_cv_ref_t<U &&, T>>;
+template<typename DeducedT, typename DesiredT>
+concept forward_ref =
+    without_cvref<DesiredT> && std::convertible_to<std::remove_cvref_t<DeducedT> *, DesiredT *>;
 
-// Implicitly converts `U` to `T` preserving cvref
+// Implicitly converts `Fwd` to `T` preserving cvref
 // Usage:
 // ```
 // template<forward_ref<std::istream> IstreamFwd>
@@ -43,12 +44,19 @@ concept forward_ref = without_cvref<T> && std::convertible_to<U &&, copy_cv_ref_
 // }
 // ```
 //
-// FIXME: `unwrap_forward_ref<std::string>("hello")` returns a dangling reference!!!
-template<typename T, typename U>
-[[nodiscard]] constexpr copy_cv_ref_t<U, T> unwrap_forward_ref(U &&v) noexcept
+// TODO:
+// ```
+// void foo(forward_ref<std::string> auto &&);
+//
+// foo(""); // won't compile
+// foo(std::string("")); // will compile but it adds inconvenience on the call site
+// ```
+template<typename T, typename Fwd>
+requires forward_ref<Fwd, T>
+[[nodiscard]] constexpr copy_cv_ref_t<Fwd &&, T> unwrap_forward_ref(Fwd &&v) noexcept
 {
     static_assert(without_cvref<T>);
-    return std::forward<U>(v);
+    return std::forward<Fwd>(v);
 }
 
 // -------------------------------------------------------------------------------------------------
