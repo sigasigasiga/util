@@ -180,7 +180,7 @@ using copy_ref_t = copy_ref<From, To>::type;
 // -------------------------------------------------------------------------------------------------
 
 template<typename From, typename To>
-class copy_cv_ref
+class copy_cvref
 {
 private:
     using from_unref_t = std::remove_reference_t<From>;
@@ -193,6 +193,6 @@ public:
 };
 
 template<typename From, typename To>
-using copy_cv_ref_t = copy_cv_ref<From, To>::type;
+using copy_cvref_t = copy_cvref<From, To>::type;
 
 } // namespace siga::util

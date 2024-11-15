@@ -154,8 +154,8 @@ public:
 
 public:
     template<typename Self>
-    [[nodiscard]] constexpr operator std::invoke_result_t<copy_cv_ref_t<Self, F>>(this Self &&self)
-        noexcept(std::is_nothrow_invocable_v<copy_cv_ref_t<Self, F>>)
+    [[nodiscard]] constexpr operator std::invoke_result_t<copy_cvref_t<Self, F>>(this Self &&self)
+        noexcept(std::is_nothrow_invocable_v<copy_cvref_t<Self, F>>)
     {
         return std::invoke(forward_self<Self, lazy_eval>(self).value());
     }
@@ -258,7 +258,7 @@ public:
 public:
     template<typename Self>
     [[nodiscard]] constexpr return_type operator()(this Self &&self)
-        noexcept(std::is_nothrow_constructible_v<return_type, copy_cv_ref_t<Self, T>>)
+        noexcept(std::is_nothrow_constructible_v<return_type, copy_cvref_t<Self, T>>)
     {
         return forward_self<Self, return_value>(self).value();
     }
@@ -287,9 +287,9 @@ public:
 
 public:
     template<typename Self>
-    requires std::invocable<copy_cv_ref_t<Self, F>>
+    requires std::invocable<copy_cvref_t<Self, F>>
     constexpr decltype(auto) operator()(this Self &&self, auto &&...)
-        noexcept(std::is_nothrow_invocable_v<copy_cv_ref_t<Self, F>>)
+        noexcept(std::is_nothrow_invocable_v<copy_cvref_t<Self, F>>)
     {
         return std::invoke(forward_self<Self, ignore_args_wrap>(self).value());
     }
@@ -308,9 +308,9 @@ public:
 
 public:
     template<typename Self, typename... Args>
-    requires std::invocable<copy_cv_ref_t<Self, F>, Args...>
+    requires std::invocable<copy_cvref_t<Self, F>, Args...>
     constexpr decltype(auto) operator()(this Self &&self, Args &&...args)
-        noexcept(std::is_nothrow_invocable_v<copy_cv_ref_t<Self, F>, Args...>)
+        noexcept(std::is_nothrow_invocable_v<copy_cvref_t<Self, F>, Args...>)
     {
         return std::invoke(
             forward_self<Self, stored_func_invoker>(self).value(),
