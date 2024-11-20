@@ -24,11 +24,6 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 
 // -------------------------------------------------------------------------------------------------
 
-template<typename T>
-concept without_cvref = std::same_as<std::remove_cvref_t<T>, T>;
-
-// -------------------------------------------------------------------------------------------------
-
 template<typename DeducedT, typename DesiredT>
 concept forward_ref =
     without_cvref<DesiredT> && std::convertible_to<std::remove_cvref_t<DeducedT> *, DesiredT *>;
@@ -65,7 +60,9 @@ requires forward_ref<Fwd, T>
 template<typename From, typename To>
 constexpr auto &&forward_self(std::remove_reference_t<From> &self) noexcept
 {
-    static_assert(std::same_as<std::remove_cvref_t<To>, To>);
+    static_assert(without_cvref<To>);
+    static_assert(std::is_base_of_v<To, std::remove_cvref_t<From>>);
+
     using ret_t = copy_cvref_t<From &&, To>;
     return (ret_t)self;
 }
@@ -73,7 +70,8 @@ constexpr auto &&forward_self(std::remove_reference_t<From> &self) noexcept
 template<typename From, typename To>
 constexpr auto &&forward_self(std::remove_reference_t<From> &&self) noexcept
 {
-    static_assert(std::same_as<std::remove_cvref_t<To>, To>);
+    static_assert(without_cvref<To>);
+    static_assert(std::is_base_of_v<To, std::remove_cvref_t<From>>);
     static_assert(!std::is_lvalue_reference_v<From>, "Cannot forward an rvalue as an lvalue");
 
     using ret_t = copy_cvref_t<From &&, To>;

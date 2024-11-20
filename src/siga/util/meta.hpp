@@ -13,6 +13,11 @@ concept conceptify = Trait<T>::value;
 
 // -------------------------------------------------------------------------------------------------
 
+template<typename T>
+concept without_cvref = std::same_as<std::remove_cvref_t<T>, T>;
+
+// -------------------------------------------------------------------------------------------------
+
 template<typename T, template<typename...> typename Trait, template<typename...> typename... Rest>
 class combine_traits
 {
