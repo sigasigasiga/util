@@ -21,10 +21,10 @@ if get_option('tests').enabled()
   )
 
   test(
-    'expected',
+    'expected_monadic',
     executable(
-      'expected',
-      'test/expected.cpp',
+      'expected_monadic',
+      'test/expected_monadic.cpp',
       dependencies: [siga_util_dep]
     )
   )
