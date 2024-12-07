@@ -6,6 +6,10 @@
 #include <type_traits>
 #include <utility>
 
+#include <siga/util/storage_base.hpp>
+
+namespace siga::util {
+
 // unsafe tag types ================================================================================
 
 class unsafe_t
@@ -16,42 +20,32 @@ public:
 
 inline constexpr unsafe_t unsafe;
 
-class unsafe_piecewise_construct_t
-{
-public:
-    explicit unsafe_piecewise_construct_t() = default;
-};
-
-inline constexpr unsafe_piecewise_construct_t unsafe_piecewise_construct;
-
 // checker =========================================================================================
 
 template<typename Checker, typename T>
-concept constrained_checker_for = requires(T value, Checker checker) {
+concept constrained_checker_for = requires(const T value, const Checker checker) {
     { checker(value) } -> std::same_as<std::expected<void, typename Checker::error_type>>;
 };
 
 // error handler ===================================================================================
 
 template<typename ErrorHandler, typename Checker>
-concept error_handler_for = requires(ErrorHandler eh, typename Checker::error_type err) { //
-    eh(err);
-};
+concept error_handler_for =
+    requires(const ErrorHandler eh, const typename Checker::error_type err) { eh(err); };
 
 // constrained =====================================================================================
 
 template<typename T, constrained_checker_for<T> Checker, error_handler_for<Checker> ErrorHandler>
-class constrained
+class constrained : private storage_base<T>,
+                    private storage_base<Checker>,
+                    private storage_base<ErrorHandler>
 {
 public:
     static_assert(std::is_object_v<T>);
     static_assert(std::is_object_v<Checker>);
     static_assert(std::is_object_v<ErrorHandler>);
 
-    static_assert(!std::same_as<T, std::in_place_t>);
-
     static_assert(!std::same_as<T, unsafe_t>);
-    static_assert(!std::same_as<T, unsafe_piecewise_construct_t>);
 
 public:
     using value_type = T;
@@ -63,12 +57,10 @@ public: // throwing constructors
         typename U = value_type,
         typename UChecker = checker_type,
         typename UErrorHandler = error_handler_type>
-    constrained(U value = {}, UChecker &&checker = {}, UErrorHandler &&error_handler = {})
-        : data_(
-              std::forward<U>(value),
-              std::forward<UChecker>(checker),
-              std::forward<UErrorHandler>(error_handler)
-          )
+    constexpr constrained(U value = {}, UChecker &&checker = {}, UErrorHandler &&error_handler = {})
+        : storage_base<value_type>(std::forward<U>(value))
+        , storage_base<checker_type>(std::forward<UChecker>(checker))
+        , storage_base<error_handler_type>(std::forward<UErrorHandler>(error_handler))
     {
         validate();
     }
@@ -79,11 +71,9 @@ public: // unsafe constructors
         typename UChecker = checker_type,
         typename UErrorHandler = error_handler_type>
     constrained(unsafe_t, U value = {}, UChecker &&checker = {}, UErrorHandler &&error_handler = {})
-        : data_(
-              std::forward<U>(value),
-              std::forward<UChecker>(checker),
-              std::forward<UErrorHandler>(error_handler)
-          )
+        : storage_base<value_type>(std::forward<U>(value))
+        , storage_base<checker_type>(std::forward<UChecker>(checker))
+        , storage_base<error_handler_type>(std::forward<UErrorHandler>(error_handler))
     {
     }
 
@@ -92,45 +82,40 @@ public: // safe assignment
     constrained &operator=(constrained &&) = default;
 
 public: // const value access
-    constexpr const T &get() const
-    {
-        assert(check());
-        return std::get<0>(data_);
-    }
-
     constexpr const value_type &operator*() const noexcept { return get(); }
     constexpr const value_type *operator->() const noexcept { return std::addressof(get()); }
+
+    constexpr const value_type &get() const noexcept
+    {
+        assert(check());
+        return storage_base<value_type>::value();
+    }
+
+    constexpr const checker_type &get_checker() const noexcept
+    {
+        return storage_base<checker_type>::value();
+    }
+
+    constexpr const error_handler_type &get_error_handler() const noexcept
+    {
+        return storage_base<error_handler_type>::value();
+    }
 
 public: // mutable value access
     constexpr value_type release() && noexcept
     {
         assert(check());
-        return std::get<0>(std::move(data_));
+        return std::move(storage_base<value_type>::value());
     }
 
     constexpr T &get(unsafe_t)
     {
         assert(check());
-        return std::get<0>(data_);
-    }
-
-public: // checker & error handler access
-    // TODO: should it be available via non-const ref?
-    template<typename Self>
-    constexpr auto &&get_checker(this Self &&self) noexcept
-    {
-        return std::get<1>(std::forward<Self>(self).data_);
-    }
-
-    // TODO: should it be available via non-const ref?
-    template<typename Self>
-    constexpr auto &&get_error_handler(this Self &&self) noexcept
-    {
-        return std::get<2>(std::forward<Self>(self).data_);
+        return storage_base<value_type>::value();
     }
 
 private:
-    constexpr auto check() { return get_checker()(data_); }
+    constexpr auto check() { return get_checker()(get()); }
 
     constexpr void validate()
     {
@@ -139,9 +124,6 @@ private:
             get_error_handler()(std::move(result).error());
         }
     }
-
-private:
-    std::tuple<T, checker_type, error_handler_type> data_;
 };
 
 // example checker which should be probably used with `util::throw_exception`
@@ -171,3 +153,5 @@ public:
         return ret;
     }
 };
+
+} // namespace siga::util
