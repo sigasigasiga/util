@@ -12,9 +12,9 @@ meson.override_dependency('siga-util', siga_util_dep)
 
 if get_option('tests').enabled()
   test(
-    'bitset',
+    'make_bitset',
     executable(
-      'bitset',
+      'make_bitset',
       'test/bitset.cpp',
       dependencies: [siga_util_dep]
     )

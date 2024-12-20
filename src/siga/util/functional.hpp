@@ -269,7 +269,7 @@ template<template<typename...> typename RetTrait>
 class [[nodiscard]] return_value<void, RetTrait>
 {
 public:
-    constexpr void operator()() noexcept {}
+    constexpr static void operator()() noexcept {}
 };
 
 template<typename T>
