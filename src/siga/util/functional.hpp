@@ -246,71 +246,49 @@ public:
 
 // -------------------------------------------------------------------------------------------------
 
-template<typename T, typename R = T>
-class [[nodiscard]] return_value : private storage_base<T>
+template<typename T, template<typename...> typename RetTrait = std::remove_cvref>
+class [[nodiscard]] return_value : private util::storage_base<T>
 {
 public:
-    using value_type = T; // TODO: is it needed? the user can't access the value directly anyway
-    using return_type = R;
+    using util::storage_base<T>::storage_base;
 
 public:
-    using storage_base<T>::storage_base;
-
-public:
-    template<typename Self>
-    [[nodiscard]] constexpr return_type operator()(this Self &&self)
-        noexcept(std::is_nothrow_constructible_v<return_type, copy_cvref_t<Self, T>>)
+    template<
+        typename Self,
+        typename Val = copy_cvref_t<Self &&, T>,
+        typename Ret = typename RetTrait<Val>::type>
+    requires std::constructible_from<Ret, Val>
+    [[nodiscard]] constexpr Ret operator()(this Self &&self)
+        noexcept(std::is_nothrow_constructible_v<Ret, Val>)
     {
-        return forward_self<Self, return_value>(self).value();
+        return util::forward_self<Self, return_value>(self).value();
     }
 };
 
-template<>
-class [[nodiscard]] return_value<void>
+template<template<typename...> typename RetTrait>
+class [[nodiscard]] return_value<void, RetTrait>
 {
 public:
-    using value_type = void; // TODO: is it needed? the user can't access the value directly anyway
-    using return_type = void;
-
-public:
-    constexpr return_type operator()() noexcept {}
+    constexpr void operator()() noexcept {}
 };
 
 template<typename T>
 return_value(T) -> return_value<T>;
 
-/// Deduce `T` and remove its cvref.
-/// If `R` is not present, it's the same as `T`
-template<
-    typename R = struct secret_impl_tag,
-    typename T,
-    typename ValueType = std::remove_cvref_t<T>,
-    typename ReturnType = std::conditional_t<std::is_same_v<R, secret_impl_tag>, ValueType, R>,
-    typename ResultType = return_value<ValueType, ReturnType>>
-[[nodiscard]] constexpr auto make_return_value(T &&value)
-    noexcept(std::is_nothrow_constructible_v<ResultType, T &&>) //
-    -> ResultType
+template<typename T>
+constexpr auto make_return_value(T &&value)
 {
-    return ResultType(std::forward<T>(value));
+    return return_value<std::decay_t<T>>(std::forward<T>(value));
 }
 
-/// Deduce `T` and remove its cvref, and set `R` to `TypeToRetTrait<T>::type`
-template<
-    template<typename...> typename TypeToRetTrait,
-    typename T,
-    typename ValueType = std::remove_cvref_t<T>,
-    typename ReturnType = typename TypeToRetTrait<ValueType>::type,
-    typename ResultType = return_value<ValueType, ReturnType>>
-[[nodiscard]] constexpr auto make_return_value(T &&value)
-    noexcept(std::is_nothrow_constructible_v<ResultType, T &&>) //
-    -> ResultType
+template<template<typename...> typename RetTrait, typename T>
+constexpr auto make_return_value(T &&value)
 {
-    return ResultType(std::forward<T>(value));
+    return return_value<std::decay_t<T>, RetTrait>(std::forward<T>(value));
 }
 
-/// Same as `return_value<void>()`, added for consistency
 template<conceptify<std::is_void> T>
-[[nodiscard]] constexpr auto make_return_value() noexcept
+constexpr auto make_return_value()
 {
     return return_value<void>();
 }

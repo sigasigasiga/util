@@ -1,28 +1,70 @@
 #include <siga/util/functional.hpp>
+#include <siga/util/meta.hpp>
+
+template<typename T>
+using ret_t = std::invoke_result_t<T>;
+
+template<typename T>
+using unwrp_t = std::unwrap_reference<std::remove_cvref_t<T>>;
 
 int main()
 {
     using namespace siga::util;
 
-    auto simple = make_return_value(3);
-    using simple_t = decltype(simple);
-    static_assert(std::same_as<simple_t, return_value<int>>);
-    using simple_ret_t = decltype(simple());
-    static_assert(std::same_as<simple_ret_t, int>);
+    // clang-format off
+    using simple_t = return_value<int>;
+    static_assert(
+        std::same_as<ret_t<simple_t &>, int> &&
+        std::same_as<ret_t<const simple_t &>, int> &&
+        std::same_as<ret_t<volatile simple_t &>, int> &&
+        std::same_as<ret_t<const volatile simple_t &>, int> &&
 
-    int x = 0;
+        std::same_as<ret_t<simple_t &&>, int> &&
+        std::same_as<ret_t<const simple_t &&>, int> &&
+        std::same_as<ret_t<volatile simple_t &&>, int> &&
+        std::same_as<ret_t<const volatile simple_t &&>, int> &&
 
-    auto manual_return_type_ref = make_return_value<float>(x);
-    using manual_return_type_ref_t = decltype(manual_return_type_ref);
-    static_assert(std::same_as<manual_return_type_ref_t, return_value<int, float>>);
-    using manual_return_type_ref_ret_t = decltype(manual_return_type_ref());
-    static_assert(std::same_as<manual_return_type_ref_ret_t, float>);
+        true
+    );
+    // clang-format on
 
-    auto with_traits = make_return_value<std::unwrap_reference>(std::ref(x));
-    using with_traits_t = decltype(with_traits);
-    static_assert(std::same_as<with_traits_t, return_value<std::reference_wrapper<int>, int &>>);
+    // clang-format off
+    using refwrp_t = return_value<std::reference_wrapper<int>>;
+    static_assert(
+        std::same_as<ret_t<refwrp_t &>, std::reference_wrapper<int>> &&
+        std::same_as<ret_t<const refwrp_t &>, std::reference_wrapper<int>> &&
 
-    auto return_void = make_return_value<void>();
-    using return_void_t = decltype(return_void);
-    static_assert(std::same_as<return_void_t, return_value<void>>);
+        std::same_as<ret_t<refwrp_t &&>, std::reference_wrapper<int>> &&
+        std::same_as<ret_t<const refwrp_t &&>, std::reference_wrapper<int>> &&
+
+        true
+    );
+    // clang-format on
+
+    // clang-format off
+    using refunwrp_t = return_value<std::reference_wrapper<int>, unwrp_t>;
+    static_assert(
+        std::same_as<ret_t<refunwrp_t &>, int &> &&
+        std::same_as<ret_t<const refunwrp_t &>, int &> &&
+
+        std::same_as<ret_t<refunwrp_t &&>, int &> &&
+        std::same_as<ret_t<const refunwrp_t &&>, int &> &&
+
+        true
+    );
+    // clang-format on
+
+    // clang-format off
+    using fwd_t = return_value<int, std::type_identity>;
+    static_assert(
+        std::same_as<ret_t<fwd_t &>, int &> &&
+        std::same_as<ret_t<const fwd_t &>, const int &> &&
+
+        std::same_as<ret_t<fwd_t &&>, int &&> &&
+        std::same_as<ret_t<const fwd_t &&>, const int &&> &&
+
+        true
+    );
+
+    // clang-format on
 }

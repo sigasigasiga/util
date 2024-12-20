@@ -18,6 +18,8 @@ concept without_cvref = std::same_as<std::remove_cvref_t<T>, T>;
 
 // -------------------------------------------------------------------------------------------------
 
+// TODO: rename to `apply_traits`
+// TODO: make `combine_traits`
 template<typename T, template<typename...> typename Trait, template<typename...> typename... Rest>
 class combine_traits
 {
