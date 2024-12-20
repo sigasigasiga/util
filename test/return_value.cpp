@@ -4,9 +4,6 @@
 template<typename T>
 using ret_t = std::invoke_result_t<T>;
 
-template<typename T>
-using unwrp_t = std::unwrap_reference<std::remove_cvref_t<T>>;
-
 int main()
 {
     using namespace siga::util;
@@ -42,7 +39,10 @@ int main()
     // clang-format on
 
     // clang-format off
-    using refunwrp_t = return_value<std::reference_wrapper<int>, unwrp_t>;
+    using refunwrp_t = return_value<
+        std::reference_wrapper<int>,
+        compose_traits<std::remove_cvref, std::unwrap_reference>::trait
+    >;
     static_assert(
         std::same_as<ret_t<refunwrp_t &>, int &> &&
         std::same_as<ret_t<const refunwrp_t &>, int &> &&

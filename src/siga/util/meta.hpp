@@ -18,32 +18,51 @@ concept without_cvref = std::same_as<std::remove_cvref_t<T>, T>;
 
 // -------------------------------------------------------------------------------------------------
 
-// TODO: rename to `apply_traits`
-// TODO: make `combine_traits`
 template<typename T, template<typename...> typename Trait, template<typename...> typename... Rest>
-class combine_traits
+class apply_traits
 {
 public:
-    using type = combine_traits<typename Trait<T>::type, Rest...>::type;
+    using type = apply_traits<typename Trait<T>::type, Rest...>::type;
 };
 
 template<typename T, template<typename...> typename Trait>
-class combine_traits<T, Trait>
+class apply_traits<T, Trait>
 {
 public:
     using type = Trait<T>::type;
 };
 
 template<typename T, template<typename...> typename... Traits>
-using combine_traits_t = combine_traits<T, Traits...>::type;
+using apply_traits_t = apply_traits<T, Traits...>::type;
 
 #if 0
 static_assert(
     std::same_as<
-        combine_traits_t<const int &, std::remove_reference, std::remove_cv>,
+        apply_traits_t<const int &, std::remove_reference, std::remove_cv>,
         int
     >
 );
+#endif
+
+// -------------------------------------------------------------------------------------------------
+
+template<template<typename...> typename... Traits>
+class compose_traits
+{
+public:
+    template<typename T>
+    using trait = apply_traits<T, Traits...>;
+};
+
+#if 0
+template<typename T>
+using remove_cvref_and_add_lvalue_ref =
+    compose_traits<std::remove_cvref, std::add_lvalue_reference>::trait<T>;
+
+template<typename T>
+using remove_cvref_and_add_lvalue_ref_t = remove_cvref_and_add_lvalue_ref<T>::type;
+
+static_assert(std::same_as<remove_cvref_and_add_lvalue_ref_t<const int &&>, int &>);
 #endif
 
 // -------------------------------------------------------------------------------------------------
