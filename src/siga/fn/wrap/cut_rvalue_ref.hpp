@@ -1,0 +1,16 @@
+#pragma once
+
+#include <siga/fn/bind/compose.hpp>
+#include <siga/fn/op/cut_rvalue_ref.hpp>
+
+namespace siga::fn::wrap {
+
+// useful for `tl::optional::transform`,
+// although i think it should replace `T&&` with `T` automatically
+template<typename F>
+[[nodiscard]] constexpr auto cut_rvalue_ref(F &&func)
+{
+    return bind::compose(std::forward<F>(func), op::cut_rvalue_ref());
+}
+
+} // namespace siga::fn::wrap

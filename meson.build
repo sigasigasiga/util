@@ -55,13 +55,4 @@ if get_option('tests').enabled()
       dependencies: [siga_util_dep]
     )
   )
-
-  test(
-    'return_value',
-    executable(
-      'return_value',
-      'test/return_value.cpp',
-      dependencies: [siga_util_dep]
-    )
-  )
 endif

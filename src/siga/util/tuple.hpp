@@ -75,6 +75,7 @@ inline constexpr bool is_nothrow_applyable_v = is_nothrow_applyable<F, Tuple>::v
 
 // -------------------------------------------------------------------------------------------------
 
+// TODO: move to `siga::fn::op`?
 class [[nodiscard]] for_each_in_parameter_pack_t
 {
 public:

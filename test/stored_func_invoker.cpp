@@ -1,19 +1,21 @@
-#include <siga/util/functional.hpp>
+#include <siga/fn/bind/stored_func_invoker.hpp>
 
 namespace {
 
 constexpr void test_storage_assignment()
 {
+    using namespace siga::util;
+
     // it:
     // 1. compiles
     // 2. without warnings
-    siga::util::storage_base<int> i;
+    storage_base<int> i;
     i = 3;
     i = 3.0f;
     auto copy = i;
     i = copy;
 
-    siga::util::storage_base<double> d;
+    storage_base<double> d;
     i = d;
     i = std::move(d);
 }
@@ -39,12 +41,14 @@ bool test_cvref()
         constexpr int operator()() const volatile && { return 8; }
     };
 
-    constexpr siga::util::stored_func_invoker inv{tester{}};
+    using namespace siga::fn::bind;
+
+    constexpr stored_func_invoker inv{tester{}};
     auto copy = inv;
     copy = inv;
     static_assert(std::same_as<const decltype(copy), decltype(inv)>);
 
-    siga::util::stored_func_invoker<std::function<int()>> fn_inv;
+    stored_func_invoker<std::function<int()>> fn_inv;
     fn_inv = inv;
     fn_inv = [] {
         return 3;
