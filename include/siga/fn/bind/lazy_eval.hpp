@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include <siga/util/storage_base.hpp>
 
 namespace siga::fn::bind {

@@ -3,7 +3,7 @@
 #include <siga/fn/op/decay_copy.hpp>
 #include <siga/fn/op/subscript.hpp>
 #include <siga/fn/wrap/unwrap_reference.hpp>
-#include <siga/util/compat.hpp>
+#include <siga/compat/bind_back.hpp>
 
 namespace siga::fn::bind {
 
@@ -27,7 +27,10 @@ template<typename F, typename... Args>
     )
 {
     // TODO: use `std::bind_back` when llvm 19
-    return util::bind_back(wrap::unwrap_reference(std::forward<F>(f)), std::forward<Args>(args)...);
+    return compat::bind_back(
+        wrap::unwrap_reference(std::forward<F>(f)),
+        std::forward<Args>(args)...
+    );
 }
 
 } // namespace detail

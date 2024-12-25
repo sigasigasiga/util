@@ -1,16 +1,10 @@
 #pragma once
 
+#include <functional>
 #include <tuple>
+#include <utility>
 
-#ifdef _MSC_VER
-#    define SIGA_UTIL_NO_UNIQUE_ADDRESS [[msvc::no_unique_address]]
-#else // _MSC_VER
-#    define SIGA_UTIL_NO_UNIQUE_ADDRESS [[no_unique_address]]
-#endif // _MSC_VER
-
-// -------------------------------------------------------------------------------------------------
-
-namespace siga::util {
+namespace siga::compat {
 
 namespace detail {
 
@@ -72,4 +66,4 @@ constexpr auto bind_back(Args &&...args)
     return detail::my_bind_back(std::forward<Args>(args)...);
 }
 
-} // namespace siga::util
+} // namespace siga::compat

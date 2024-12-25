@@ -2,9 +2,9 @@
 
 #include <type_traits>
 
+#include <siga/compat/no_unique_address.hpp>
 #include <siga/meta/concepts.hpp>
 #include <siga/meta/copy_cvref.hpp>
-#include <siga/util/compat.hpp>
 
 namespace siga::util {
 
@@ -20,7 +20,7 @@ template<typename T>
 requires std::is_empty_v<T>
 struct [[nodiscard]] no_unique_address_if_empty<T>
 {
-    SIGA_UTIL_NO_UNIQUE_ADDRESS T value_;
+    SIGA_COMPAT_NO_UNIQUE_ADDRESS T value_;
 };
 
 // -------------------------------------------------------------------------------------------------
