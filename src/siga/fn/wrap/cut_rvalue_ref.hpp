@@ -6,7 +6,7 @@
 namespace siga::fn::wrap {
 
 // useful for `tl::optional::transform`,
-// although i think it should replace `T&&` with `T` automatically
+// although i think it should've been replacing `T&&` with `T` automatically
 template<typename F>
 [[nodiscard]] constexpr auto cut_rvalue_ref(F &&func)
 {

@@ -15,7 +15,7 @@ public:
     [[nodiscard]] constexpr operator std::invoke_result_t<UF>(this Self &&self)
         noexcept(std::is_nothrow_invocable_v<UF>)
     {
-        return std::invoke(forward_self<Self, lazy_eval>(self).value());
+        return std::invoke(util::forward_self<Self, lazy_eval>(self).value());
     }
 };
 

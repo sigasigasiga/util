@@ -17,7 +17,7 @@ public:
         noexcept(std::is_nothrow_invocable_v<UF, Args...>)
     {
         return std::invoke(
-            forward_self<Self, stored_func_invoker>(self).value(),
+            util::forward_self<Self, stored_func_invoker>(self).value(),
             std::forward<Args>(args)...
         );
     }

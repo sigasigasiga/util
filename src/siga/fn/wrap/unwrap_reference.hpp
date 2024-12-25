@@ -5,10 +5,12 @@
 
 namespace siga::fn::wrap {
 
+namespace detail {
+
 // TODO: make `apply_trait_wrap` and
-// implement `unwrap_reference` as `apply_trait_wrap<std::unwrap_reference>`
+// implement `unwrap_reference` as `apply_trait_wrap<std::unwrap_reference>`?
 template<typename F>
-class [[nodiscard]] unwrap_reference : private util::storage_base<F>
+class [[nodiscard]] unwrap_reference_impl : private util::storage_base<F>
 {
 public:
     using util::storage_base<F>::storage_base;
@@ -18,25 +20,31 @@ public:
     template<typename Self, typename... Args>
     requires requires(Self &&self, Args &&...args) {
         std::invoke(
-            forward_self<Self, unwrap_reference>(self).value(),
+            util::forward_self<Self, unwrap_reference_impl>(self).value(),
             op::get_reference()(std::forward<Args>(args))...
         );
     }
     constexpr decltype(auto) operator()(this Self &&self, Args &&...args)
         noexcept(noexcept(std::invoke(
-            forward_self<Self, unwrap_reference>(self).value(),
+            util::forward_self<Self, unwrap_reference_impl>(self).value(),
             op::get_reference()(std::forward<Args>(args))...
         )))
     {
         return std::invoke(
-            forward_self<Self, unwrap_reference>(self).value(),
+            util::forward_self<Self, unwrap_reference_impl>(self).value(),
             op::get_reference()(std::forward<Args>(args))...
         );
     }
     // clang-format on
 };
 
+} // namespace detail
+
 template<typename F>
-unwrap_reference(F) -> unwrap_reference<F>;
+[[nodiscard]] constexpr auto unwrap_reference(F &&fn)
+    noexcept(std::is_nothrow_constructible_v<std::decay_t<F>, F &&>)
+{
+    return detail::unwrap_reference_impl<std::decay_t<F>>(std::forward<F>(fn));
+}
 
 } // namespace siga::fn::wrap
