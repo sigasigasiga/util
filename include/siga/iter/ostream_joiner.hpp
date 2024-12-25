@@ -4,7 +4,7 @@
 #include <string>
 #include <utility>
 
-namespace siga::util {
+namespace siga::iter {
 
 template<typename DelimT, typename CharT = char, typename Traits = std::char_traits<CharT>>
 requires std::copy_constructible<DelimT> || std::move_constructible<DelimT>
@@ -73,53 +73,4 @@ auto make_ostream_joiner(std::basic_ostream<CharT, Traits> &os, DelimT &&delim)
     return ostream_joiner<std::decay_t<DelimT>, CharT, Traits>{os, std::forward<DelimT>(delim)};
 }
 
-// -------------------------------------------------------------------------------------------------
-
-template<typename Container>
-auto rerase(Container &container, std::reverse_iterator<typename Container::iterator> rit)
-{
-    ++rit;
-    return std::make_reverse_iterator(container.erase(rit.base()));
-}
-
-template<typename Container>
-auto rerase(
-    Container &container,
-    std::reverse_iterator<typename Container::iterator> rbegin,
-    std::reverse_iterator<typename Container::iterator> rend
-)
-{
-    return std::make_reverse_iterator(container.erase(rend.base(), rbegin.base()));
-}
-
-// -------------------------------------------------------------------------------------------------
-
-template<std::input_or_output_iterator It>
-[[nodiscard]] constexpr decltype(auto) get_lowest_iter_base(It &&it)
-{
-    constexpr bool has_base = requires {
-        { std::forward<It>(it).base() } -> std::input_or_output_iterator;
-    };
-
-    if constexpr(has_base) {
-        return get_lowest_iter_base(std::forward<It>(it).base());
-    } else {
-        return std::forward<It>(it);
-    }
-}
-
-template<std::ranges::range Range>
-[[nodiscard]] constexpr decltype(auto) get_lowest_range_base(Range &&range)
-{
-    constexpr bool has_base = requires {
-        { std::forward<Range>(range).base() } -> std::ranges::range;
-    };
-
-    if constexpr(has_base) {
-        return get_lowest_range_base(std::forward<Range>(range).base());
-    } else {
-        return std::forward<Range>(range);
-    }
-}
-
-} // namespace siga::util
+} // namespace siga::iter
