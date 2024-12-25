@@ -4,7 +4,6 @@
 #include <type_traits>
 #include <utility>
 
-#include <siga/util/meta.hpp>
 #include <siga/util/utility.hpp>
 
 namespace siga::util {

@@ -15,7 +15,7 @@ public:
     using util::storage_base<F>::storage_base;
 
 public:
-    template<typename Self, typename UF = util::copy_cvref_t<Self &&, F>>
+    template<typename Self, typename UF = meta::copy_cvref_t<Self &&, F>>
     requires std::invocable<UF>
     constexpr decltype(auto) operator()(this Self &&self, auto &&...)
         noexcept(std::is_nothrow_invocable_v<UF>)

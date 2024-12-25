@@ -12,8 +12,8 @@ namespace detail {
 template<typename F, typename... Args>
 [[nodiscard]] constexpr auto bind_front_unwrap(F &&f, Args &&...args) //
     noexcept(
-        op::is_nothrow_decay_copy_constructible_v<F> &&
-        (... && op::is_nothrow_decay_copy_constructible_v<Args>)
+        meta::is_nothrow_decay_copy_constructible_v<F> &&
+        (... && meta::is_nothrow_decay_copy_constructible_v<Args>)
     )
 {
     return std::bind_front(wrap::unwrap_reference(std::forward<F>(f)), std::forward<Args>(args)...);
@@ -22,8 +22,8 @@ template<typename F, typename... Args>
 template<typename F, typename... Args>
 [[nodiscard]] constexpr auto bind_back_unwrap(F &&f, Args &&...args) //
     noexcept(
-        op::is_nothrow_decay_copy_constructible_v<F> &&
-        (... && op::is_nothrow_decay_copy_constructible_v<Args>)
+        meta::is_nothrow_decay_copy_constructible_v<F> &&
+        (... && meta::is_nothrow_decay_copy_constructible_v<Args>)
     )
 {
     // TODO: use `std::bind_back` when llvm 19

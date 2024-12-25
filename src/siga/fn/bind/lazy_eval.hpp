@@ -11,7 +11,7 @@ public:
     using util::storage_base<F>::storage_base;
 
 public:
-    template<typename Self, typename UF = util::copy_cvref_t<Self &&, F>>
+    template<typename Self, typename UF = meta::copy_cvref_t<Self &&, F>>
     [[nodiscard]] constexpr operator std::invoke_result_t<UF>(this Self &&self)
         noexcept(std::is_nothrow_invocable_v<UF>)
     {

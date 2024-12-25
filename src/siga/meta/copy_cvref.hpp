@@ -1,106 +1,8 @@
 #pragma once
 
-#include <algorithm>
-#include <ranges>
-#include <stdexcept>
-#include <string_view>
+#include <type_traits>
 
-namespace siga::util {
-
-// idea from Ed Catmur. usage example: `conceptify<std::is_enum>`
-template<typename T, template<typename...> typename Trait>
-concept conceptify = Trait<T>::value;
-
-// -------------------------------------------------------------------------------------------------
-
-template<typename T>
-concept without_cvref = std::same_as<std::remove_cvref_t<T>, T>;
-
-// -------------------------------------------------------------------------------------------------
-
-template<typename T, template<typename...> typename Trait, template<typename...> typename... Rest>
-class apply_traits
-{
-public:
-    using type = apply_traits<typename Trait<T>::type, Rest...>::type;
-};
-
-template<typename T, template<typename...> typename Trait>
-class apply_traits<T, Trait>
-{
-public:
-    using type = Trait<T>::type;
-};
-
-template<typename T, template<typename...> typename... Traits>
-using apply_traits_t = apply_traits<T, Traits...>::type;
-
-#if 0
-static_assert(
-    std::same_as<
-        apply_traits_t<const int &, std::remove_reference, std::remove_cv>,
-        int
-    >
-);
-#endif
-
-// -------------------------------------------------------------------------------------------------
-
-template<template<typename...> typename... Traits>
-class compose_traits
-{
-public:
-    template<typename T>
-    using trait = apply_traits<T, Traits...>;
-};
-
-#if 0
-template<typename T>
-using remove_cvref_and_add_lvalue_ref =
-    compose_traits<std::remove_cvref, std::add_lvalue_reference>::trait<T>;
-
-template<typename T>
-using remove_cvref_and_add_lvalue_ref_t = remove_cvref_and_add_lvalue_ref<T>::type;
-
-static_assert(std::same_as<remove_cvref_and_add_lvalue_ref_t<const int &&>, int &>);
-#endif
-
-// -------------------------------------------------------------------------------------------------
-
-template<typename... Ts>
-class [[nodiscard]] type_list
-{};
-
-// -------------------------------------------------------------------------------------------------
-
-template<std::size_t N>
-struct [[nodiscard]] string_literal
-{
-public:
-    static_assert(N > 0);
-    static constexpr std::size_t size = N - 1;
-
-public:
-    constexpr string_literal() = default;
-
-    constexpr string_literal(const char (&str)[N])
-    {
-        if(str[N - 1] == '\0') {
-            std::ranges::copy(str, std::ranges::begin(data));
-        } else {
-            throw std::invalid_argument{"the string must be null-terminated"};
-        }
-    }
-
-public:
-    [[nodiscard]] constexpr std::string_view as_view() const noexcept { return data; }
-    [[nodiscard]] constexpr operator std::string_view() const noexcept { return as_view(); }
-
-public:
-    char data[N] = {};
-};
-
-// -------------------------------------------------------------------------------------------------
+namespace siga::meta {
 
 template<typename From, typename To>
 class copy_const
@@ -221,4 +123,4 @@ public:
 template<typename From, typename To>
 using copy_cvref_t = copy_cvref<From, To>::type;
 
-} // namespace siga::util
+} // namespace siga::meta

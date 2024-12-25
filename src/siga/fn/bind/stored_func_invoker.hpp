@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include <siga/util/storage_base.hpp>
 
 namespace siga::fn::bind {
@@ -11,7 +13,7 @@ public:
     using util::storage_base<F>::storage_base;
 
 public:
-    template<typename Self, typename... Args, typename UF = util::copy_cvref_t<Self, F>>
+    template<typename Self, typename... Args, typename UF = meta::copy_cvref_t<Self, F>>
     requires std::invocable<UF, Args...>
     constexpr decltype(auto) operator()(this Self &&self, Args &&...args)
         noexcept(std::is_nothrow_invocable_v<UF, Args...>)

@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include <siga/util/meta.hpp>
+#include <siga/meta/concepts.hpp>
 
 namespace siga::fn::bind {
 
@@ -14,7 +14,7 @@ template<typename T>
     return std::bind_front(std::identity{}, std::forward<T>(value));
 }
 
-template<util::conceptify<std::is_void> T = void>
+template<meta::conceptify<std::is_void> T = void>
 [[nodiscard]] constexpr auto return_value()
 {
     return [] noexcept {

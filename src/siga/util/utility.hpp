@@ -2,8 +2,9 @@
 
 #include <type_traits>
 
+#include <siga/meta/concepts.hpp>
+#include <siga/meta/copy_cvref.hpp>
 #include <siga/util/compat.hpp>
-#include <siga/util/meta.hpp>
 
 namespace siga::util {
 
@@ -25,8 +26,8 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 // -------------------------------------------------------------------------------------------------
 
 template<typename DeducedT, typename DesiredT>
-concept forward_ref =
-    without_cvref<DesiredT> && std::convertible_to<std::remove_cvref_t<DeducedT> *, DesiredT *>;
+concept forward_ref = meta::without_cvref<DesiredT> &&
+                      std::convertible_to<std::remove_cvref_t<DeducedT> *, DesiredT *>;
 
 // Implicitly converts `Fwd` to `T` preserving cvref
 // Usage:
@@ -48,9 +49,9 @@ concept forward_ref =
 // ```
 template<typename T, typename Fwd>
 requires forward_ref<Fwd, T>
-[[nodiscard]] constexpr copy_cvref_t<Fwd &&, T> unwrap_forward_ref(Fwd &&v) noexcept
+[[nodiscard]] constexpr meta::copy_cvref_t<Fwd &&, T> unwrap_forward_ref(Fwd &&v) noexcept
 {
-    static_assert(without_cvref<T>);
+    static_assert(meta::without_cvref<T>);
     return std::forward<Fwd>(v);
 }
 
@@ -60,21 +61,21 @@ requires forward_ref<Fwd, T>
 template<typename From, typename To>
 constexpr auto &&forward_self(std::remove_reference_t<From> &self) noexcept
 {
-    static_assert(without_cvref<To>);
+    static_assert(meta::without_cvref<To>);
     static_assert(std::is_base_of_v<To, std::remove_cvref_t<From>>);
 
-    using ret_t = copy_cvref_t<From &&, To>;
+    using ret_t = meta::copy_cvref_t<From &&, To>;
     return (ret_t)self;
 }
 
 template<typename From, typename To>
 constexpr auto &&forward_self(std::remove_reference_t<From> &&self) noexcept
 {
-    static_assert(without_cvref<To>);
+    static_assert(meta::without_cvref<To>);
     static_assert(std::is_base_of_v<To, std::remove_cvref_t<From>>);
     static_assert(!std::is_lvalue_reference_v<From>, "Cannot forward an rvalue as an lvalue");
 
-    using ret_t = copy_cvref_t<From &&, To>;
+    using ret_t = meta::copy_cvref_t<From &&, To>;
     return (ret_t)self;
 }
 
