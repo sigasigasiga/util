@@ -1,6 +1,5 @@
 #include <sstream>
 
-#include <siga/util/toy.hpp>
 #include <siga/util/utility.hpp>
 
 using namespace siga::util;
