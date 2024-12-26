@@ -1,7 +1,9 @@
 #pragma once
 
 #include <concepts>
+#include <functional>
 
+#include <siga/meta/decay_copy.hpp>
 #include <siga/util/storage_base.hpp>
 
 namespace siga::fn::wrap {
@@ -28,7 +30,7 @@ public:
 
 template<std::invocable F>
 [[nodiscard]] constexpr auto ignore_args(F &&fn)
-    noexcept(std::is_nothrow_constructible_v<std::decay_t<F>, F &&>)
+    noexcept(meta::is_nothrow_decay_copy_constructible_v<F>)
 {
     return detail::ignore_args_impl<std::decay_t<F>>(std::forward<F>(fn));
 }

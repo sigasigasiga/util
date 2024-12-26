@@ -1,6 +1,7 @@
 #pragma once
 
 #include <siga/fn/op/get_reference.hpp>
+#include <siga/meta/decay_copy.hpp>
 #include <siga/util/storage_base.hpp>
 
 namespace siga::fn::wrap {
@@ -42,7 +43,7 @@ public:
 
 template<typename F>
 [[nodiscard]] constexpr auto unwrap_reference(F &&fn)
-    noexcept(std::is_nothrow_constructible_v<std::decay_t<F>, F &&>)
+    noexcept(meta::is_nothrow_decay_copy_constructible_v<F>)
 {
     return detail::unwrap_reference_impl<std::decay_t<F>>(std::forward<F>(fn));
 }
