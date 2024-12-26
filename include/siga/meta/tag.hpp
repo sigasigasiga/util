@@ -1,6 +1,6 @@
 #pragma once
 
-namespace siga::util {
+namespace siga::meta {
 
 template<typename T>
 class [[nodiscard]] type_tag
@@ -28,4 +28,4 @@ constexpr value_tag<V> make_tag() noexcept
     return {};
 }
 
-} // namespace siga::util
+} // namespace siga::meta
