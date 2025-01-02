@@ -55,4 +55,13 @@ if get_option('tests').enabled()
       dependencies: [siga_util_dep]
     )
   )
+
+  test(
+    'include_all.cpp',
+    executable(
+      'include_all',
+      'test/include_all.cpp',
+      dependencies: [siga_util_dep]
+    )
+  )
 endif
