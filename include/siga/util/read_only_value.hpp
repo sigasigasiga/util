@@ -8,7 +8,7 @@ namespace siga::util {
 // That's an attempt to do something similar to that.
 //
 // Why `read_only_value` may be better than `const` in some scenarios:
-// 1. It is move-constructible and move-assignable
+// 1. It is move-constructible
 // 2. Like in Rust, you can make the value mutable by moving it to a mutable variable
 //
 //    Rust: `let x = "".to_string(); let mut y = x;`

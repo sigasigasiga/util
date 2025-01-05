@@ -1,5 +1,20 @@
+#include <siga/compat.hpp>
+#include <siga/fn.hpp>
+#include <siga/iter.hpp>
+#include <siga/meta.hpp>
+#include <siga/toy.hpp>
 #include <siga/util.hpp>
 
 int main()
 {
+    using namespace siga;
+
+    util::ignore = compat::bind_back(1, 1);
+    util::ignore = fn::bind::equal_to(3);
+    util::ignore = fn::op::subscript();
+    util::ignore = fn::wrap::ignore_args([] {});
+    util::ignore = iter::make_ostream_joiner(std::cout, " ");
+    util::ignore = meta::make_tag<0>();
+    util::ignore = toy::printing_constructor();
+    util::ignore = util::read_only_value(3);
 }
