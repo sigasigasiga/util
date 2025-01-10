@@ -1,3 +1,4 @@
+#include <siga/algo.hpp>
 #include <siga/compat.hpp>
 #include <siga/fn.hpp>
 #include <siga/iter.hpp>
@@ -9,6 +10,7 @@ int main()
 {
     using namespace siga;
 
+    util::ignore = algo::find(std::array{1, 2, 3}, 3);
     util::ignore = compat::bind_back(1, 1);
     util::ignore = fn::bind::equal_to(3);
     util::ignore = fn::op::subscript();
