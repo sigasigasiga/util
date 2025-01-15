@@ -6,6 +6,10 @@
 
 namespace siga::fn::op {
 
+// TODO: add support for `T.get<I>()`
+
+// TODO: `std::variant` cannot use these types. is this ok?
+
 template<typename T>
 class [[nodiscard]] get_by_type
 {
