@@ -2,18 +2,19 @@
 
 #include <utility>
 
+#include <siga/meta/tuple.hpp>
+
 namespace siga::fn::op {
 
 template<typename T>
 class [[nodiscard]] get_by_type
 {
 public:
-    template<typename Gettable>
-    requires requires(Gettable &&gettable) { get<T>(std::forward<Gettable>(gettable)); }
-    [[nodiscard]] static constexpr decltype(auto) operator()(Gettable &&gettable)
-        noexcept(noexcept(get<T>(std::declval<Gettable>())))
+    template<meta::tuple_like Tuple>
+    [[nodiscard]] static constexpr decltype(auto) operator()(Tuple &&tup)
+        noexcept(noexcept(get<T>(std::forward<Tuple>(tup))))
     {
-        return get<T>(std::forward<Gettable>(gettable));
+        return get<T>(std::forward<Tuple>(tup));
     }
 };
 
@@ -21,12 +22,11 @@ template<auto V>
 class [[nodiscard]] get_by_value
 {
 public:
-    template<typename Gettable>
-    requires requires(Gettable &&gettable) { get<V>(std::forward<Gettable>(gettable)); }
-    [[nodiscard]] static constexpr decltype(auto) operator()(Gettable &&gettable)
-        noexcept(noexcept(get<V>(std::declval<Gettable>())))
+    template<meta::tuple_like Tuple>
+    [[nodiscard]] static constexpr decltype(auto) operator()(Tuple &&tup)
+        noexcept(noexcept(get<V>(std::declval<Tuple>())))
     {
-        return get<V>(std::forward<Gettable>(gettable));
+        return get<V>(std::forward<Tuple>(tup));
     }
 };
 
@@ -41,5 +41,30 @@ constexpr get_by_value<V> make_get() noexcept
 {
     return {};
 }
+
+// -------------------------------------------------------------------------------------------------
+
+// same as `get_by_value` but also check if the type satisfies `pair_like`
+class [[nodiscard]] get_key
+{
+public:
+    template<meta::pair_like FwdPair>
+    [[nodiscard]] static constexpr decltype(auto) operator()(FwdPair &&pair)
+        noexcept(noexcept(get<0>(std::forward<FwdPair>(pair))))
+    {
+        return get<0>(std::forward<FwdPair>(pair));
+    }
+};
+
+class [[nodiscard]] get_value
+{
+public:
+    template<meta::pair_like FwdPair>
+    [[nodiscard]] static constexpr decltype(auto) operator()(FwdPair &&pair)
+        noexcept(noexcept(get<1>(std::forward<FwdPair>(pair))))
+    {
+        return get<1>(std::forward<FwdPair>(pair));
+    }
+};
 
 } // namespace siga::fn::op

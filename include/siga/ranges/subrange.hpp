@@ -2,12 +2,21 @@
 
 #include <iterator>
 
+#include <siga/meta/tuple.hpp>
+
 namespace siga::ranges {
 
-template<std::input_iterator I, std::sentinel_for<I> S>
-[[nodiscard]] constexpr auto make_subrange(std::pair<I, S> p) // TODO: pair-like
+template<
+    meta::pair_like FwdPair,
+    typename Pair = std::remove_cvref_t<FwdPair>,
+    std::input_iterator First = std::tuple_element_t<0, Pair>,
+    std::sentinel_for<First> Second = std::tuple_element_t<1, Pair> >
+[[nodiscard]] constexpr auto make_subrange(FwdPair &&p)
 {
-    return std::ranges::subrange(p.first, p.second);
+    return std::ranges::subrange(
+        get<0>(std::forward<FwdPair>(p)),
+        get<1>(std::forward<FwdPair>(p))
+    );
 }
 
 } // namespace siga::ranges
