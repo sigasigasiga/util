@@ -6,19 +6,25 @@
 
 namespace siga::fn::op {
 
-// TODO: add support for `T.get<I>()`
-
-// TODO: `std::variant` cannot use these types. is this ok?
-
 template<typename T>
 class [[nodiscard]] get_by_type
 {
 public:
-    template<meta::tuple_like Tuple>
-    [[nodiscard]] static constexpr decltype(auto) operator()(Tuple &&tup)
-        noexcept(noexcept(get<T>(std::forward<Tuple>(tup))))
+    template<typename U> // do not require it to be tuple-like, as it may also be a variant
+    requires(!requires(U &&v) { std::forward<U>(v).template get<T>(); })
+    [[nodiscard]] static constexpr auto operator()(U &&val)
+        noexcept(noexcept(get<T>(std::forward<U>(val)))) //
+        -> decltype(get<T>(std::forward<U>(val)))
     {
-        return get<T>(std::forward<Tuple>(tup));
+        return get<T>(std::forward<U>(val));
+    }
+
+    template<typename U>
+    [[nodiscard]] static constexpr auto operator()(U &&val)
+        noexcept(noexcept(std::forward<U>(val).template get<T>())) //
+        -> decltype(std::forward<U>(val).template get<T>())
+    {
+        return std::forward<U>(val).template get<T>();
     }
 };
 
@@ -26,11 +32,21 @@ template<auto V>
 class [[nodiscard]] get_by_value
 {
 public:
-    template<meta::tuple_like Tuple>
-    [[nodiscard]] static constexpr decltype(auto) operator()(Tuple &&tup)
-        noexcept(noexcept(get<V>(std::declval<Tuple>())))
+    template<typename U> // do not require it to be tuple-like, as it may also be a variant
+    requires(!requires(U &&v) { std::forward<U>(v).template get<V>(); })
+    [[nodiscard]] static constexpr auto operator()(U &&val)
+        noexcept(noexcept(get<V>(std::forward<U>(val)))) //
+        -> decltype(get<V>(std::forward<U>(val)))
     {
-        return get<V>(std::forward<Tuple>(tup));
+        return get<V>(std::forward<U>(val));
+    }
+
+    template<typename U>
+    [[nodiscard]] static constexpr auto operator()(U &&val)
+        noexcept(noexcept(std::forward<U>(val).template get<V>())) //
+        -> decltype(std::forward<U>(val).template get<V>())
+    {
+        return std::forward<U>(val).template get<V>();
     }
 };
 
