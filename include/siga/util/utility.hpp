@@ -28,7 +28,7 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 
 // usage: `cut_rvalue_ref(std::forward<T>(val))`
 template<typename T>
-auto cut_rvalue_ref(T &&value)                                 //
+[[nodiscard]] auto cut_rvalue_ref(T &&value)                   //
     noexcept(noexcept(static_cast<T>(std::forward<T>(value)))) //
     -> decltype(static_cast<T>(std::forward<T>(value)))
 {
@@ -38,6 +38,20 @@ auto cut_rvalue_ref(T &&value)                                 //
     // so if the passed value is lvalue, we return the lvalue,
     // and if the passed value is rvalue, we return the value
     return static_cast<T>(std::forward<T>(value));
+}
+
+// -------------------------------------------------------------------------------------------------
+
+template<typename T>
+[[nodiscard]] constexpr decltype(auto) get_reference(T &&value) noexcept
+{
+    return std::forward<T>(value);
+}
+
+template<typename T>
+[[nodiscard]] constexpr decltype(auto) get_reference(std::reference_wrapper<T> ref) noexcept
+{
+    return ref.get();
 }
 
 // -------------------------------------------------------------------------------------------------

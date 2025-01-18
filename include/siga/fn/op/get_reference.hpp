@@ -1,7 +1,6 @@
 #pragma once
 
-#include <functional>
-#include <utility>
+#include <siga/util/utility.hpp>
 
 namespace siga::fn::op {
 
@@ -9,15 +8,11 @@ class [[nodiscard]] get_reference
 {
 public:
     template<typename T>
-    [[nodiscard]] static constexpr decltype(auto) operator()(T &&value) noexcept
+    [[nodiscard]] static constexpr auto operator()(T &&value)
+        noexcept(noexcept(util::get_reference(std::forward<T>(value)))) //
+        -> decltype(util::get_reference(std::forward<T>(value)))
     {
-        return std::forward<T>(value);
-    }
-
-    template<typename T>
-    [[nodiscard]] static constexpr decltype(auto) operator()(std::reference_wrapper<T> ref) noexcept
-    {
-        return ref.get();
+        return util::get_reference(std::forward<T>(value));
     }
 };
 
