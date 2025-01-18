@@ -1,6 +1,7 @@
 #pragma once
 
 #include <type_traits>
+#include <utility>
 
 #include <siga/compat/no_unique_address.hpp>
 #include <siga/meta/concepts.hpp>
@@ -22,6 +23,22 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 {
     SIGA_COMPAT_NO_UNIQUE_ADDRESS T value_;
 };
+
+// -------------------------------------------------------------------------------------------------
+
+// usage: `cut_rvalue_ref(std::forward<T>(val))`
+template<typename T>
+auto cut_rvalue_ref(T &&value)                                 //
+    noexcept(noexcept(static_cast<T>(std::forward<T>(value)))) //
+    -> decltype(static_cast<T>(std::forward<T>(value)))
+{
+    // cut_rvalue_ref(0) -> cut_rvalue_ref<int>(int &&);
+    // cut_rvalue_ref(x) -> cut_rvalue_ref<int &>(int &);
+    //
+    // so if the passed value is lvalue, we return the lvalue,
+    // and if the passed value is rvalue, we return the value
+    return static_cast<T>(std::forward<T>(value));
+}
 
 // -------------------------------------------------------------------------------------------------
 
