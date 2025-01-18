@@ -35,10 +35,11 @@ public:
 public:
     [[nodiscard]] constexpr const T &get() const noexcept { return storage_base<T>::value(); }
 
-    // I'm not sure if allowing `release` only for rvalues is a good idea, but it looks nice to me:
-    // this way it'd be easier to notice that the value would be moved-from after the operation.
-    //
-    // However, it's not consistent with STL -- `unique_ptr` also has lvalue release
+    // Notes:
+    // 1. I'm not sure if allowing `release` only for rvalues is a good idea, but IMO it looks nice:
+    //    this way it'd be easier to notice that the value would be moved-from after the operation.
+    //    However, it's not consistent with STL -- `unique_ptr::release` works for both `&` and `&&`
+    // 2. `T &&` is not returned, as the underlying value may be modified using the reference
     [[nodiscard]] constexpr T release() && noexcept { return std::move(*this).value(); }
 };
 
