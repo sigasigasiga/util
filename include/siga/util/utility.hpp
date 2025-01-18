@@ -6,6 +6,7 @@
 #include <siga/compat/no_unique_address.hpp>
 #include <siga/meta/concepts.hpp>
 #include <siga/meta/copy_cvref.hpp>
+#include <siga/meta/decay_copy.hpp>
 
 namespace siga::util {
 
@@ -23,6 +24,23 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 {
     SIGA_COMPAT_NO_UNIQUE_ADDRESS T value_;
 };
+
+// -------------------------------------------------------------------------------------------------
+
+template<typename T>
+[[nodiscard]] constexpr T copy(const T &v) noexcept(std::is_nothrow_copy_constructible_v<T>)
+{
+    return v;
+}
+
+// -------------------------------------------------------------------------------------------------
+
+template<typename T>
+[[nodiscard]] constexpr std::decay_t<T> decay_copy(T &&value)
+    noexcept(meta::is_nothrow_decay_copy_constructible_v<T>)
+{
+    return value;
+}
 
 // -------------------------------------------------------------------------------------------------
 

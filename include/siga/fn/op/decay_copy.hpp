@@ -1,6 +1,6 @@
 #pragma once
 
-#include <siga/meta/decay_copy.hpp>
+#include <siga/util/utility.hpp>
 
 namespace siga::fn::op {
 
@@ -10,10 +10,11 @@ class [[nodiscard]] decay_copy
 {
 public:
     template<typename T>
-    [[nodiscard]] static constexpr std::decay_t<T> operator()(T &&value)
-        noexcept(meta::is_nothrow_decay_copy_constructible_v<T>)
+    [[nodiscard]] static constexpr auto operator()(T &&value)
+        noexcept(noexcept(util::decay_copy(std::forward<T>(value)))) //
+        -> decltype(util::decay_copy(std::forward<T>(value)))
     {
-        return value;
+        return util::decay_copy(std::forward<T>(value));
     }
 };
 
