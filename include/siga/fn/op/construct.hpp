@@ -9,9 +9,9 @@ class [[nodiscard]] construct
 {
 public:
     template<typename... Args>
-    requires requires(Args &&...args) { T(std::forward<Args>(args)...); }
-    [[nodiscard]] static constexpr T operator()(Args &&...args)
-        noexcept(noexcept(T(std::forward<Args>(args)...)))
+    [[nodiscard]] static constexpr auto operator()(Args &&...args)
+        noexcept(noexcept(T(std::forward<Args>(args)...))) //
+        -> decltype(T(std::forward<Args>(args)...))
     {
         return T(std::forward<Args>(args)...);
     }
@@ -22,9 +22,9 @@ class [[nodiscard]] construct<T, false>
 {
 public:
     template<typename... Args>
-    requires requires(Args &&...args) { T{std::forward<Args>(args)...}; }
-    [[nodiscard]] static constexpr T operator()(Args &&...args)
-        noexcept(noexcept(T{std::forward<Args>(args)...}))
+    [[nodiscard]] static constexpr auto operator()(Args &&...args)
+        noexcept(noexcept(T{std::forward<Args>(args)...})) //
+        -> decltype(T{std::forward<Args>(args)...})
     {
         return T{std::forward<Args>(args)...};
     }

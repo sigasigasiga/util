@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include <siga/fn/op/get_reference.hpp>
 #include <siga/meta/decay_copy.hpp>
 #include <siga/util/storage_base.hpp>
