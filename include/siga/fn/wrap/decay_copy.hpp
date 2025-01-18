@@ -9,7 +9,8 @@ namespace siga::fn::wrap {
 // useful for `std::optional::transform`
 template<typename F>
 [[nodiscard]] constexpr auto decay_copy(F &&func)
-    noexcept(meta::is_nothrow_decay_copy_constructible_v<F>)
+    noexcept(noexcept(bind::compose(std::forward<F>(func), op::decay_copy()))) //
+    -> decltype(bind::compose(std::forward<F>(func), op::decay_copy()))
 {
     return bind::compose(std::forward<F>(func), op::decay_copy());
 }
