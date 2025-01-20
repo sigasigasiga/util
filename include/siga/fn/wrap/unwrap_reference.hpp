@@ -2,9 +2,9 @@
 
 #include <functional>
 
-#include <siga/fn/op/get_reference.hpp>
 #include <siga/meta/decay_copy.hpp>
 #include <siga/util/storage_base.hpp>
+#include <siga/util/utility.hpp>
 
 namespace siga::fn::wrap {
 
@@ -21,21 +21,19 @@ public:
 public:
     // clang-format off
     template<typename Self, typename... Args>
-    requires requires(Self &&self, Args &&...args) {
-        std::invoke(
-            util::forward_self<Self, unwrap_reference_impl>(self).value(),
-            op::get_reference()(std::forward<Args>(args))...
-        );
-    }
-    constexpr decltype(auto) operator()(this Self &&self, Args &&...args)
+    constexpr auto operator()(this Self &&self, Args &&...args)
         noexcept(noexcept(std::invoke(
             util::forward_self<Self, unwrap_reference_impl>(self).value(),
-            op::get_reference()(std::forward<Args>(args))...
+            util::get_reference(std::forward<Args>(args))...
         )))
+        -> decltype(std::invoke(
+            util::forward_self<Self, unwrap_reference_impl>(self).value(),
+            util::get_reference(std::forward<Args>(args))...
+        ))
     {
         return std::invoke(
             util::forward_self<Self, unwrap_reference_impl>(self).value(),
-            op::get_reference()(std::forward<Args>(args))...
+            util::get_reference(std::forward<Args>(args))...
         );
     }
     // clang-format on
