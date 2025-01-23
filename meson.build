@@ -64,4 +64,13 @@ if get_option('tests').enabled()
       dependencies: [siga_util_dep]
     )
   )
+
+  test(
+    'tuple_fold_invoke.cpp',
+    executable(
+      'tuple_fold_invoke',
+      'test/tuple_fold_invoke.cpp',
+      dependencies: [siga_util_dep]
+    )
+  )
 endif
