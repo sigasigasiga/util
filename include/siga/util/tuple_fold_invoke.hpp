@@ -12,7 +12,7 @@ class adl_tag
 {};
 
 template<std::size_t I, typename Tup, typename... Args>
-auto impl(adl_tag, std::index_sequence<I>, Tup &&tup, Args &&...args)                            //
+constexpr auto impl(adl_tag, std::index_sequence<I>, Tup &&tup, Args &&...args)                  //
     noexcept(noexcept(std::invoke(get<I>(std::forward<Tup>(tup)), std::forward<Args>(args)...))) //
     -> decltype(std::invoke(get<I>(std::forward<Tup>(tup)), std::forward<Args>(args)...))
 {
@@ -20,7 +20,7 @@ auto impl(adl_tag, std::index_sequence<I>, Tup &&tup, Args &&...args)           
 }
 
 template<std::size_t I, std::size_t... Is, typename Tup, typename... Args>
-auto impl(adl_tag, std::index_sequence<I, Is...>, Tup &&tup, Args &&...args) //
+constexpr auto impl(adl_tag, std::index_sequence<I, Is...>, Tup &&tup, Args &&...args) //
     noexcept(noexcept(impl(
         adl_tag{},
         std::index_sequence<Is...>{},
@@ -48,7 +48,7 @@ template<
     typename Tup,
     typename... Args,
     std::size_t TupSz = std::tuple_size_v<std::remove_cvref_t<Tup>>>
-auto tuple_fold_invoke(Tup &&tup, Args &&...args) //
+constexpr auto tuple_fold_invoke(Tup &&tup, Args &&...args) //
     noexcept(noexcept(detail_fold_invoke::impl(
         detail_fold_invoke::adl_tag{},
         std::make_index_sequence<TupSz>{},
