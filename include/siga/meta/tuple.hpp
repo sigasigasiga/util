@@ -47,47 +47,4 @@ concept tuple_like =
 template<typename T>
 concept pair_like = tuple_like<T> && std::tuple_size<std::remove_cvref_t<T>>::value == 2;
 
-// -------------------------------------------------------------------------------------------------
-
-template<typename Tuple, std::size_t I>
-class tuple_get_type
-{
-public:
-    using type = decltype(get<I>(std::declval<Tuple>()));
-};
-
-template<typename Tuple, std::size_t I>
-using tuple_get_type_t = tuple_get_type<Tuple, I>::type;
-
-// -------------------------------------------------------------------------------------------------
-
-template<typename F, typename Tuple>
-concept applyable = requires(F &&func, Tuple &&tuple) {
-    std::apply(std::forward<F>(func), std::forward<Tuple>(tuple));
-};
-
-// -------------------------------------------------------------------------------------------------
-
-template<typename F, typename Tuple>
-class apply_result
-{
-public:
-    using type = decltype(std::apply(std::declval<F>(), std::declval<Tuple>()));
-};
-
-template<typename F, typename Tuple>
-using apply_result_t = apply_result<F, Tuple>::type;
-
-// -------------------------------------------------------------------------------------------------
-
-template<typename F, typename Tuple>
-class is_nothrow_applyable
-{
-public:
-    constexpr static bool value = noexcept(std::apply(std::declval<F>(), std::declval<Tuple>()));
-};
-
-template<typename F, typename Tuple>
-inline constexpr bool is_nothrow_applyable_v = is_nothrow_applyable<F, Tuple>::value;
-
 } // namespace siga::meta
