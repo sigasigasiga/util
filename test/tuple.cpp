@@ -1,4 +1,5 @@
 #include <ranges>
+#include <string>
 #include <tuple>
 
 #include <siga/meta/tuple.hpp>
@@ -162,6 +163,35 @@ struct std::tuple_element<0, type_is_a_ref_but_get_returns_a_value> : std::type_
 
 // -------------------------------------------------------------------------------------------------
 
+struct convertible_to_rvalue_int
+{
+    operator int &&()
+    {
+        static int x;
+        return std::move(x);
+    }
+};
+
+struct mismatching_types_convertible_to_rvalue
+{
+    template<std::size_t I>
+    convertible_to_rvalue_int get()
+    {
+        return {};
+    }
+};
+
+template<>
+struct std::tuple_size<mismatching_types_convertible_to_rvalue>
+    : std::integral_constant<std::size_t, 1>
+{};
+
+template<>
+struct std::tuple_element<0, mismatching_types_convertible_to_rvalue> : std::type_identity<int>
+{};
+
+// -------------------------------------------------------------------------------------------------
+
 int main()
 {
     using namespace siga::meta;
@@ -201,4 +231,7 @@ int main()
 
     // self-explanatory
     static_assert(not tuple_like<type_is_a_ref_but_get_returns_a_value>);
+
+    // `tuple_element` = `int`; `get` returns a type that converts to rvalue `int`
+    static_assert(tuple_like<mismatching_types_convertible_to_rvalue>);
 }
