@@ -6,7 +6,6 @@
 #include <siga/compat/no_unique_address.hpp>
 #include <siga/meta/concepts.hpp>
 #include <siga/meta/copy_cvref.hpp>
-#include <siga/meta/decay_copy.hpp>
 
 namespace siga::util {
 
@@ -27,19 +26,28 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 
 // -------------------------------------------------------------------------------------------------
 
+// clang-format off
+
+// works with explicit copy constructors
 template<typename T>
-[[nodiscard]] constexpr T copy(const T &v) noexcept(std::is_nothrow_copy_constructible_v<T>)
+[[nodiscard]] constexpr auto copy(const T &v)
+    noexcept(noexcept(T(v)))
+    -> decltype(T(v))
 {
-    return v;
+    return T(v);
 }
+// clang-format on
 
 // -------------------------------------------------------------------------------------------------
 
+// https://en.cppreference.com/w/cpp/standard_library/decay-copy
+// works with explicit copy constructors
 template<typename T>
-[[nodiscard]] constexpr std::decay_t<T> decay_copy(T &&value)
-    noexcept(meta::is_nothrow_decay_copy_constructible_v<T>)
+[[nodiscard]] constexpr auto decay_copy(T &&value)
+    noexcept(noexcept(std::decay_t<T>(std::forward<T>(value)))) //
+    -> decltype(std::decay_t<T>(std::forward<T>(value)))
 {
-    return value;
+    return std::decay_t<T>(std::forward<T>(value));
 }
 
 // -------------------------------------------------------------------------------------------------
