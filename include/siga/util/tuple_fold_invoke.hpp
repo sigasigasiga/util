@@ -47,7 +47,7 @@ constexpr auto impl(adl_tag, std::index_sequence<I, Is...>, Tup &&tup, Args &&..
 template<
     typename Tup,
     typename... Args,
-    std::size_t TupSz = std::tuple_size_v<std::remove_cvref_t<Tup>>>
+    std::size_t TupSz = std::tuple_size_v<std::remove_reference_t<Tup>>>
 constexpr auto tuple_fold_invoke(Tup &&tup, Args &&...args) //
     noexcept(noexcept(detail_fold_invoke::impl(
         detail_fold_invoke::adl_tag{},
