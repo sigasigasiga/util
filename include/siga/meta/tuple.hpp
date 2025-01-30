@@ -40,10 +40,10 @@ concept tuple_like =
         }
     }(
         // compiler error messages are better if we don't use `std::tuple_size_v`
-        std::make_index_sequence<std::tuple_size<std::remove_cvref_t<T>>::value>{}
+        std::make_index_sequence<std::tuple_size<std::remove_reference_t<T>>::value>{}
     );
 
 template<typename T>
-concept pair_like = tuple_like<T> && std::tuple_size<std::remove_cvref_t<T>>::value == 2;
+concept pair_like = tuple_like<T> && std::tuple_size<std::remove_reference_t<T>>::value == 2;
 
 } // namespace siga::meta
