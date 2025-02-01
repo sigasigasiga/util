@@ -3,7 +3,7 @@
 #include <siga/fn/bind/compose.hpp>
 #include <siga/fn/op/cut_rvalue_ref.hpp>
 
-namespace siga::fn::wrap {
+namespace siga::fn::wrap::ret {
 
 // useful for `tl::optional::transform`,
 // although i think it should've been replacing `T &&` with `T` automatically
@@ -15,4 +15,4 @@ template<typename F>
     return bind::compose(std::forward<F>(func), op::cut_rvalue_ref());
 }
 
-} // namespace siga::fn::wrap
+} // namespace siga::fn::wrap::ret

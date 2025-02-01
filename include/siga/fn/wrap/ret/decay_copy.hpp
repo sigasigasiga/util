@@ -4,7 +4,7 @@
 #include <siga/fn/op/decay_copy.hpp>
 #include <siga/meta/decay_copy.hpp>
 
-namespace siga::fn::wrap {
+namespace siga::fn::wrap::ret {
 
 // useful for `std::optional::transform`
 template<typename F>
@@ -15,4 +15,4 @@ template<typename F>
     return bind::compose(std::forward<F>(func), op::decay_copy());
 }
 
-} // namespace siga::fn::wrap
+} // namespace siga::fn::wrap::ret

@@ -15,7 +15,8 @@ int main()
     util::ignore = compat::bind_back(1, 1);
     util::ignore = fn::bind::equal_to(3);
     util::ignore = fn::op::subscript();
-    util::ignore = fn::wrap::ignore_args([] {});
+    util::ignore = fn::wrap::args::ignore([] {});
+    util::ignore = fn::wrap::ret::decay_copy([] { return 1; });
     util::ignore = iter::make_ostream_joiner(std::cout, " ");
     util::ignore = meta::make_tag<0>();
     util::ignore = ranges::make_subrange(std::pair{(int *)0, (int *)0});

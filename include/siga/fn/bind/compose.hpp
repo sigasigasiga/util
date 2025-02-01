@@ -1,6 +1,5 @@
 #pragma once
 
-#include <siga/fn/op/decay_copy.hpp>
 #include <siga/fn/op/tuple_fold_invoke.hpp>
 
 namespace siga::fn::bind {

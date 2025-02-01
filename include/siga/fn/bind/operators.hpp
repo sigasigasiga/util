@@ -2,7 +2,7 @@
 
 #include <siga/fn/op/decay_copy.hpp>
 #include <siga/fn/op/subscript.hpp>
-#include <siga/fn/wrap/unwrap_reference.hpp>
+#include <siga/fn/wrap/args/unwrap_reference.hpp>
 #include <siga/compat/bind_back.hpp>
 
 namespace siga::fn::bind {
@@ -16,7 +16,10 @@ template<typename F, typename... Args>
         (... && meta::is_nothrow_decay_copy_constructible_v<Args>)
     )
 {
-    return std::bind_front(wrap::unwrap_reference(std::forward<F>(f)), std::forward<Args>(args)...);
+    return std::bind_front(
+        wrap::args::unwrap_reference(std::forward<F>(f)),
+        std::forward<Args>(args)...
+    );
 }
 
 template<typename F, typename... Args>
@@ -28,7 +31,7 @@ template<typename F, typename... Args>
 {
     // TODO: use `std::bind_back` when llvm 19
     return compat::bind_back(
-        wrap::unwrap_reference(std::forward<F>(f)),
+        wrap::args::unwrap_reference(std::forward<F>(f)),
         std::forward<Args>(args)...
     );
 }
