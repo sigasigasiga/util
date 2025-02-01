@@ -3,7 +3,6 @@
 #include <concepts>
 #include <functional>
 
-#include <siga/meta/decay_copy.hpp>
 #include <siga/util/storage_base.hpp>
 
 namespace siga::fn::wrap::args {

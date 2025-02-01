@@ -2,7 +2,6 @@
 
 #include <siga/fn/bind/compose.hpp>
 #include <siga/fn/op/decay_copy.hpp>
-#include <siga/meta/decay_copy.hpp>
 
 namespace siga::fn::wrap::ret {
 

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <functional>
-#include <tuple>
 #include <utility>
+#include <version>
 
 namespace siga::compat {
 
@@ -12,48 +12,47 @@ namespace detail {
 
 template<typename... Args>
 constexpr auto my_bind_back(Args &&...args)
+    noexcept(noexcept(std::bind_back(std::forward<Args>(args)...))) //
+    -> decltype(std::bind_back(std::forward<Args>(args)...))
 {
     return std::bind_back(std::forward<Args>(args)...);
 }
 
 #else // __cpp_lib_bind_back
 
-// TODO: This should be `noexcept`, however this is a temporary fix until LLVM 19
-// so it probably doesn't worth the effort
-template<typename Fn, typename... Bound>
-requires std::is_object_v<Fn> && (... && std::is_object_v<Bound>)
-class [[nodiscard]] bind_back_impl
+template<typename F, typename... Args>
+constexpr auto my_bind_back(F &&fn, Args &&...args)
+    noexcept(noexcept([_ = std::forward<F>(fn), ... _(std::forward<Args>(args))] {}))
 {
-public:
-    template<typename UFn, typename... UBound>
-    constexpr bind_back_impl(UFn &&fn, UBound &&...bound)
-        : fn_{std::forward<UFn>(fn)}
-        , storage_{std::forward<UBound>(bound)...}
-    {
-    }
-
-public:
-    template<typename Self, typename... Args>
-    constexpr decltype(auto) operator()(this Self &&self, Args &&...args)
-    {
-        return std::apply(
-            std::forward<Self>(self).fn_,
-            std::tuple_cat(
-                std::forward_as_tuple(std::forward<Args>(args)...),
-                std::forward<Self>(self).storage_
-            )
-        );
-    }
-
-private:
-    Fn fn_;
-    std::tuple<Bound...> storage_;
-};
-
-template<typename... Args>
-constexpr auto my_bind_back(Args &&...args)
-{
-    return bind_back_impl<std::decay_t<Args>...>(std::forward<Args>(args)...);
+    // clang-format off
+    return
+        [
+            fn = std::forward<F>(fn),
+            ...bound_args(std::forward<Args>(args))
+        ]
+        <typename Self, typename... Front>
+        (
+            this Self &&,
+            Front &&...front
+        )
+            noexcept(noexcept(std::invoke(
+                std::forward_like<Self>(fn),
+                std::forward<Front>(front)...,
+                std::forward_like<Self>(bound_args)...
+            )))
+            -> decltype(std::invoke(
+                std::forward_like<Self>(fn),
+                std::forward<Front>(front)...,
+                std::forward_like<Self>(bound_args)...
+            ))
+        {
+            return std::invoke(
+                std::forward_like<Self>(fn),
+                std::forward<Front>(front)...,
+                std::forward_like<Self>(bound_args)...
+            );
+        };
+    // clang-format on
 }
 
 #endif // __cpp_lib_bind_back

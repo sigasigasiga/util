@@ -1,20 +1,23 @@
 #pragma once
 
-#include <siga/fn/op/decay_copy.hpp>
+#include <siga/compat/bind_back.hpp>
 #include <siga/fn/op/subscript.hpp>
 #include <siga/fn/wrap/args/unwrap_reference.hpp>
-#include <siga/compat/bind_back.hpp>
 
 namespace siga::fn::bind {
 
 namespace detail {
 
 template<typename F, typename... Args>
-[[nodiscard]] constexpr auto bind_front_unwrap(F &&f, Args &&...args) //
-    noexcept(
-        meta::is_nothrow_decay_copy_constructible_v<F> &&
-        (... && meta::is_nothrow_decay_copy_constructible_v<Args>)
-    )
+[[nodiscard]] constexpr auto bind_front_unwrap(F &&f, Args &&...args)
+    noexcept(noexcept(std::bind_front(
+        wrap::args::unwrap_reference(std::forward<F>(f)),
+        std::forward<Args>(args)...
+    ))) //
+    -> decltype(std::bind_front(
+        wrap::args::unwrap_reference(std::forward<F>(f)),
+        std::forward<Args>(args)...
+    ))
 {
     return std::bind_front(
         wrap::args::unwrap_reference(std::forward<F>(f)),
@@ -23,13 +26,16 @@ template<typename F, typename... Args>
 }
 
 template<typename F, typename... Args>
-[[nodiscard]] constexpr auto bind_back_unwrap(F &&f, Args &&...args) //
-    noexcept(
-        meta::is_nothrow_decay_copy_constructible_v<F> &&
-        (... && meta::is_nothrow_decay_copy_constructible_v<Args>)
-    )
+[[nodiscard]] constexpr auto bind_back_unwrap(F &&f, Args &&...args)
+    noexcept(noexcept(compat::bind_back(
+        wrap::args::unwrap_reference(std::forward<F>(f)),
+        std::forward<Args>(args)...
+    ))) //
+    -> decltype(compat::bind_back(
+        wrap::args::unwrap_reference(std::forward<F>(f)),
+        std::forward<Args>(args)...
+    ))
 {
-    // TODO: use `std::bind_back` when llvm 19
     return compat::bind_back(
         wrap::args::unwrap_reference(std::forward<F>(f)),
         std::forward<Args>(args)...

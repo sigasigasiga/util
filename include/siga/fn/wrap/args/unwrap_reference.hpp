@@ -2,7 +2,6 @@
 
 #include <functional>
 
-#include <siga/meta/decay_copy.hpp>
 #include <siga/util/storage_base.hpp>
 #include <siga/util/utility.hpp>
 
