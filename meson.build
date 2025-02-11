@@ -73,4 +73,13 @@ if get_option('tests').enabled()
       dependencies: [siga_util_dep]
     )
   )
+
+  test(
+    'consign_view.cpp',
+    executable(
+      'consign_view',
+      'test/consign_view.cpp',
+      dependencies: [siga_util_dep]
+    )
+  )
 endif
