@@ -26,6 +26,16 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 
 // -------------------------------------------------------------------------------------------------
 
+template<std::size_t P>
+class overload_priority : public overload_priority<P - 1>
+{};
+
+template<>
+class overload_priority<0>
+{};
+
+// -------------------------------------------------------------------------------------------------
+
 // clang-format off
 
 // works with explicit copy constructors
