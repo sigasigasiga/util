@@ -15,34 +15,38 @@ class adl_tag
 {};
 
 template<typename Ptr>
-auto impl(adl_tag, const Ptr &ptr, overload_priority<0>)
+constexpr auto impl(adl_tag, const Ptr &ptr, overload_priority<0>) noexcept(noexcept(ptr.get()))
 requires requires(std::size_t i) {
     // overload for `unique_ptr<T[]>` and `shared_ptr<T[]>`.
     // it isn't perfect by any means but i guess that's something?
-    { ptr[i] } -> std::same_as<typename Ptr::element_type &>;
-    { ptr.get() } -> std::same_as<typename Ptr::element_type *>;
+    { ptr[i] } -> std::same_as<typename std::pointer_traits<Ptr>::element_type &>;
+    { ptr.get() } -> std::same_as<typename std::pointer_traits<Ptr>::element_type *>;
 }
 {
     return ptr.get();
 }
 
 template<typename Ptr>
-auto impl(adl_tag, const Ptr &ptr, overload_priority<1>)
+constexpr auto impl(adl_tag, const Ptr &ptr, overload_priority<1>)
+    noexcept(noexcept(impl(adl_tag{}, ptr.operator->(), highest_priority))) //
     -> decltype(impl(adl_tag{}, ptr.operator->(), highest_priority))
 {
     return impl(adl_tag{}, ptr.operator->(), highest_priority);
 }
 
+// TODO: should we `static_assert` that it returns a raw pointer?
 template<typename Ptr>
-auto impl(adl_tag, const Ptr &ptr, overload_priority<2>)
+constexpr auto impl(adl_tag, const Ptr &ptr, overload_priority<2>)
+    noexcept(noexcept(std::pointer_traits<Ptr>::to_address(ptr))) //
     -> decltype(std::pointer_traits<Ptr>::to_address(ptr))
 {
     return std::pointer_traits<Ptr>::to_address(ptr);
 }
 
 template<typename T>
-T *impl(adl_tag, T *ptr, overload_priority<3>)
+constexpr T *impl(adl_tag, T *ptr, overload_priority<3>) noexcept
 {
+    static_assert(!std::is_function_v<T>, "STL prohibits function pointers in `to_address`");
     return ptr;
 }
 
@@ -51,7 +55,7 @@ T *impl(adl_tag, T *ptr, overload_priority<3>)
 // clang-format off
 
 // `std::to_address` is not SFINAE-friendly and it doesn't support `{unique,shared}_ptr<T[]>`
-auto to_address(const auto &ptr)
+[[nodiscard]] constexpr auto to_address(const auto &ptr)
     noexcept(noexcept(impl(detail_to_address::adl_tag{}, ptr, detail_to_address::highest_priority)))
     -> decltype(impl(detail_to_address::adl_tag{}, ptr, detail_to_address::highest_priority))
 {
