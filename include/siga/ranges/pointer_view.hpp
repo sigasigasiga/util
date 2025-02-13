@@ -9,6 +9,11 @@
 namespace siga::ranges {
 
 // TODO: noexcept
+
+// This class allows to create an owning view from a fancy pointer.
+//
+// It is better then `views::iota(0uz, size) | views::transform(siga::fn::bind::index_in(ptr))`
+// because it only stores 2 pointers, while this combined view stores two `std::size_t`s and a ptr
 template<typename Ptr, typename Sent>
 requires requires(Ptr ptr, Sent sent) { util::to_address(ptr) == sent; }
 class [[nodiscard]] pointer_view : public std::ranges::view_interface<pointer_view<Ptr, Sent>>
