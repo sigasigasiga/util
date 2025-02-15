@@ -34,14 +34,15 @@ constexpr auto impl(adl_tag, const Ptr &ptr, overload_priority<1>)
     return impl(adl_tag{}, ptr.operator->(), highest_priority);
 }
 
-// TODO: should we `static_assert` that it returns a raw pointer?
+// clang-format off
 template<typename Ptr>
-constexpr auto impl(adl_tag, const Ptr &ptr, overload_priority<2>)
-    noexcept(noexcept(std::pointer_traits<Ptr>::to_address(ptr))) //
-    -> decltype(std::pointer_traits<Ptr>::to_address(ptr))
+constexpr meta::conceptify<std::is_pointer> auto impl(adl_tag, const Ptr &ptr, overload_priority<2>)
+    noexcept(noexcept(std::pointer_traits<Ptr>::to_address(ptr)))
+    requires requires { std::pointer_traits<Ptr>::to_address(ptr); }
 {
     return std::pointer_traits<Ptr>::to_address(ptr);
 }
+// clang-format on
 
 template<typename T>
 constexpr T *impl(adl_tag, T *ptr, overload_priority<3>) noexcept
