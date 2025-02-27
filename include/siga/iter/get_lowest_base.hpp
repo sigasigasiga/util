@@ -15,7 +15,7 @@ template<std::input_or_output_iterator It>
     };
 
     if constexpr(has_base) {
-        return get_lowest_iter_base(std::forward<It>(it).base());
+        return (get_lowest_base)(std::forward<It>(it).base());
     } else {
         return util::cut_rvalue_ref(std::forward<It>(it));
     }
