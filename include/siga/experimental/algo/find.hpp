@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include <siga/algo/policy.hpp>
+#include <siga/experimental/algo/policy.hpp>
 
 namespace siga::algo {
 

@@ -1,5 +1,5 @@
-#include <siga/algo.hpp>
 #include <siga/compat.hpp>
+#include <siga/experimental.hpp>
 #include <siga/fn.hpp>
 #include <siga/iter.hpp>
 #include <siga/meta.hpp>

@@ -13,6 +13,7 @@ public:
     using util::storage_base<F>::storage_base;
 
 public:
+    // TODO: you have to write it 3 times
     template<typename Self, typename... Args, typename UF = meta::copy_cvref_t<Self, F>>
     requires std::invocable<UF, Args...>
     constexpr decltype(auto) operator()(this Self &&self, Args &&...args)

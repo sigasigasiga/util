@@ -13,6 +13,7 @@ public:
     using util::storage_base<F>::storage_base;
 
 public:
+    // TODO: you have to write it three times
     template<typename Self, typename UF = meta::copy_cvref_t<Self &&, F>>
     [[nodiscard]] constexpr operator std::invoke_result_t<UF>(this Self &&self)
         noexcept(std::is_nothrow_invocable_v<UF>)
