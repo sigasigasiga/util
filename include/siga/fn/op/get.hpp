@@ -69,8 +69,9 @@ class [[nodiscard]] get_key
 {
 public:
     template<meta::pair_like FwdPair>
-    [[nodiscard]] static constexpr decltype(auto) operator()(FwdPair &&pair)
-        noexcept(noexcept(get<0>(std::forward<FwdPair>(pair))))
+    [[nodiscard]] static constexpr auto operator()(FwdPair &&pair)
+        noexcept(noexcept(get<0>(std::forward<FwdPair>(pair)))) //
+        -> decltype(get<0>(std::forward<FwdPair>(pair)))
     {
         return get<0>(std::forward<FwdPair>(pair));
     }
@@ -80,8 +81,9 @@ class [[nodiscard]] get_value
 {
 public:
     template<meta::pair_like FwdPair>
-    [[nodiscard]] static constexpr decltype(auto) operator()(FwdPair &&pair)
-        noexcept(noexcept(get<1>(std::forward<FwdPair>(pair))))
+    [[nodiscard]] static constexpr auto operator()(FwdPair &&pair)
+        noexcept(noexcept(get<1>(std::forward<FwdPair>(pair)))) //
+        -> decltype(get<1>(std::forward<FwdPair>(pair)))
     {
         return get<1>(std::forward<FwdPair>(pair));
     }
