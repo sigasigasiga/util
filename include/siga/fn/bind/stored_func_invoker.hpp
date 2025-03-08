@@ -13,16 +13,15 @@ public:
     using util::storage_base<F>::storage_base;
 
 public:
-    // TODO: you have to write it 3 times
-    template<typename Self, typename... Args, typename UF = meta::copy_cvref_t<Self, F>>
-    requires std::invocable<UF, Args...>
-    constexpr decltype(auto) operator()(this Self &&self, Args &&...args)
-        noexcept(std::is_nothrow_invocable_v<UF, Args...>)
+    template<
+        typename FwdSelf,
+        typename... Args,
+        typename Self = meta::copy_cvref_t<FwdSelf &&, stored_func_invoker>>
+    constexpr auto operator()(this FwdSelf &&self, Args &&...args)
+        noexcept(noexcept(std::invoke(((Self)self).value(), std::forward<Args>(args)...))) //
+        -> decltype(std::invoke(((Self)self).value(), std::forward<Args>(args)...))
     {
-        return std::invoke(
-            util::forward_self<Self, stored_func_invoker>(self).value(),
-            std::forward<Args>(args)...
-        );
+        return std::invoke(((Self)self).value(), std::forward<Args>(args)...);
     }
 };
 

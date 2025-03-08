@@ -1,13 +1,15 @@
 #pragma once
 
+#include <functional> // IWYU: `std::ref`
+#include <utility>    // IWYU: `std::forward`
+
 // clang-format off
-#define SIGA_FN_OP_LIFT_FUNCTION_SINGLE(X)                                                          \
+#define SIGA_FN_OP_LIFT_FUNCTION_SINGLE(X)                                                         \
     []<typename... Args>(Args &&...args)                                                           \
         constexpr                                                                                  \
         static                                                                                     \
         noexcept(noexcept(X(::std::forward<Args>(args)...)))                                       \
-        -> decltype(auto)                                                                          \
-        requires requires { X(::std::forward<Args>(args)...); }                                    \
+        -> decltype(X(::std::forward<Args>(args)...))                                              \
     {                                                                                              \
         return X(::std::forward<Args>(args)...);                                                   \
     }
