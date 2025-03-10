@@ -25,7 +25,7 @@ public:
     {
     }
 
-    constexpr pointer_view(Ptr ptr, std::pointer_traits<Ptr>::difference_type n)
+    constexpr pointer_view(Ptr ptr, std::size_t n)
         : ptr_{std::move(ptr)}
         , sent_{util::to_address(ptr_) + n}
     {
@@ -41,7 +41,7 @@ private:
 };
 
 template<typename Ptr>
-pointer_view(Ptr, typename std::pointer_traits<Ptr>::difference_type)
+pointer_view(Ptr, std::size_t)
     -> pointer_view<Ptr, typename std::pointer_traits<Ptr>::element_type *>;
 
 } // namespace siga::ranges
