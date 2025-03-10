@@ -125,25 +125,32 @@ requires forward_ref<Fwd, T>
 // -------------------------------------------------------------------------------------------------
 
 // https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r7.html#the-shadowing-mitigation-private-inheritance-problem
-template<typename From, typename To>
-constexpr auto &&forward_self(std::remove_reference_t<From> &self) noexcept
+template<typename To, typename From>
+[[nodiscard]] constexpr To private_base_cast(From &from) noexcept
 {
-    static_assert(meta::without_cvref<To>);
-    static_assert(std::is_base_of_v<To, std::remove_cvref_t<From>>);
+    static_assert(std::is_reference_v<To>, "`To` is not a reference");
 
-    using ret_t = meta::copy_cvref_t<From &&, To>;
-    return (ret_t)self;
+    static_assert(
+        std::is_base_of_v<std::remove_cvref_t<To>, std::remove_cvref_t<From>>,
+        "`To` is not base of `From`"
+    );
+
+    using cv_from_t = std::remove_reference_t<From>;
+    using cv_to_t = std::remove_reference_t<To>;
+    static_assert(
+        !std::is_const_v<cv_from_t> || std::is_const_v<cv_to_t>,
+        "You can't cast `const` away"
+    );
+    static_assert(
+        !std::is_volatile_v<cv_from_t> || std::is_volatile_v<cv_to_t>,
+        "You can't cast `volatile` away"
+    );
+
+    return (To)from;
 }
 
-template<typename From, typename To>
-constexpr auto &&forward_self(std::remove_reference_t<From> &&self) noexcept
-{
-    static_assert(meta::without_cvref<To>);
-    static_assert(std::is_base_of_v<To, std::remove_cvref_t<From>>);
-    static_assert(!std::is_lvalue_reference_v<From>, "Cannot forward an rvalue as an lvalue");
-
-    using ret_t = meta::copy_cvref_t<From &&, To>;
-    return (ret_t)self;
-}
+template<typename To, typename From>
+[[nodiscard]] constexpr To private_base_cast(From &&from) noexcept //
+    = delete("Casting a temporary to a reference may produce a dangling reference");
 
 } // namespace siga::util

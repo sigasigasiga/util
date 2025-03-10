@@ -3,6 +3,7 @@
 #include <ranges>
 
 #include <siga/util/scoped.hpp>
+#include <siga/util/utility.hpp>
 
 namespace siga::ranges {
 
@@ -29,13 +30,12 @@ public:
 
 public:
     // clang-format off
-    template<typename Self>
+    template<typename Self, typename USelf = meta::copy_cvref_t<Self &&, consign_view>>
     constexpr auto base(this Self &&self)
         noexcept(noexcept(View(std::forward<Self>(self).view_)))
         -> decltype(View(std::forward<Self>(self).view_))
     {
-        // TODO: `forward_self`?
-        return View(std::forward<Self>(self).view_);
+        return View(util::private_base_cast<USelf>(self).view_);
     }
 
     constexpr auto begin() const

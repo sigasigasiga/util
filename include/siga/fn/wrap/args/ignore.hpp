@@ -16,12 +16,12 @@ public:
     using util::storage_base<F>::storage_base;
 
 public:
-    template<typename Self>
+    template<typename Self, typename USelf = meta::copy_cvref_t<Self &&, impl>>
     constexpr auto operator()(this Self &&self, auto &&...)
-        noexcept(noexcept(std::invoke(util::forward_self<Self, impl>(self).value()))) //
-        -> decltype(std::invoke(util::forward_self<Self, impl>(self).value()))
+        noexcept(noexcept(std::invoke(util::private_base_cast<USelf>(self).value()))) //
+        -> decltype(std::invoke(util::private_base_cast<USelf>(self).value()))
     {
-        return std::invoke(util::forward_self<Self, impl>(self).value());
+        return std::invoke(util::private_base_cast<USelf>(self).value());
     }
 };
 

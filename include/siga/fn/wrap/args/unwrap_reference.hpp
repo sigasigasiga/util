@@ -19,19 +19,19 @@ public:
 
 public:
     // clang-format off
-    template<typename Self, typename... Args>
+    template<typename Self, typename... Args, typename USelf = meta::copy_cvref_t<Self &&, impl>>
     constexpr auto operator()(this Self &&self, Args &&...args)
         noexcept(noexcept(std::invoke(
-            util::forward_self<Self, impl>(self).value(),
+            util::private_base_cast<USelf>(self).value(),
             util::get_reference(std::forward<Args>(args))...
         )))
         -> decltype(std::invoke(
-            util::forward_self<Self, impl>(self).value(),
+            util::private_base_cast<USelf>(self).value(),
             util::get_reference(std::forward<Args>(args))...
         ))
     {
         return std::invoke(
-            util::forward_self<Self, impl>(self).value(),
+            util::private_base_cast<USelf>(self).value(),
             util::get_reference(std::forward<Args>(args))...
         );
     }

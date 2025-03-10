@@ -14,14 +14,23 @@ public:
 
 public:
     template<
-        typename FwdSelf,
+        typename Self,
         typename... Args,
-        typename Self = meta::copy_cvref_t<FwdSelf &&, stored_func_invoker>>
-    constexpr auto operator()(this FwdSelf &&self, Args &&...args)
-        noexcept(noexcept(std::invoke(((Self)self).value(), std::forward<Args>(args)...))) //
-        -> decltype(std::invoke(((Self)self).value(), std::forward<Args>(args)...))
+        typename USelf = meta::copy_cvref_t<Self &&, stored_func_invoker>>
+    constexpr auto operator()(this Self &&self, Args &&...args) //
+        noexcept(noexcept(std::invoke(
+            util::private_base_cast<USelf>(self).value(),
+            std::forward<Args>(args)...
+        ))) //
+        -> decltype(std::invoke(
+            util::private_base_cast<USelf>(self).value(),
+            std::forward<Args>(args)...
+        ))
     {
-        return std::invoke(((Self)self).value(), std::forward<Args>(args)...);
+        return std::invoke(
+            util::private_base_cast<USelf>(self).value(),
+            std::forward<Args>(args)...
+        );
     }
 };
 

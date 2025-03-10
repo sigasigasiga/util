@@ -186,10 +186,10 @@ public:
     // clang-format on
 
 protected:
-    template<typename Self>
+    template<typename Self, typename USelf = meta::copy_cvref_t<Self &&, storage_base>>
     [[nodiscard]] constexpr auto &&value(this Self &&self) noexcept
     {
-        return forward_self<Self, storage_base>(self).value_;
+        return (private_base_cast<USelf>)(self).value_;
     }
 };
 
