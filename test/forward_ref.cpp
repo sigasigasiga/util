@@ -1,8 +1,8 @@
 #include <sstream>
 
-#include <siga/util/utility.hpp>
+#include <siga/experimental/util/utility.hpp>
 
-using namespace siga::util;
+using namespace siga::experimental::util;
 
 template<forward_ref<std::istream> IstreamFwd>
 void foo(IstreamFwd &&is_fwd)
