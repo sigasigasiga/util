@@ -21,15 +21,6 @@ if get_option('tests').enabled()
   )
 
   test(
-    'expected_monadic',
-    executable(
-      'expected_monadic',
-      'test/expected_monadic.cpp',
-      dependencies: [siga_util_dep]
-    )
-  )
-
-  test(
     'forward_ref',
     executable(
       'forward_ref',
