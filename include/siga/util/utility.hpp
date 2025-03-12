@@ -2,7 +2,6 @@
 
 #include <type_traits>
 #include <utility>
-#include <version>
 
 #include <siga/compat/no_unique_address.hpp>
 #include <siga/meta/concepts.hpp>
@@ -107,14 +106,6 @@ requires std::is_reference_v<CvRefTo> &&
 {
     return (CvRefTo)from;
 }
-
-template<typename To, typename From>
-[[nodiscard]] constexpr To private_base_cast(From &&from) noexcept
-#if __cpp_deleted_function >= 202403L
-    = delete("Casting a temporary to a reference may produce a dangling reference");
-#else
-    = delete;
-#endif
 
 // clang-format on
 
