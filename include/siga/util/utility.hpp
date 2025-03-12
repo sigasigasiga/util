@@ -2,6 +2,7 @@
 
 #include <type_traits>
 #include <utility>
+#include <version>
 
 #include <siga/compat/no_unique_address.hpp>
 #include <siga/meta/concepts.hpp>
@@ -92,33 +93,29 @@ template<typename T>
 
 // -------------------------------------------------------------------------------------------------
 
+// clang-format off
+
 // https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r7.html#the-shadowing-mitigation-private-inheritance-problem
-template<typename To, typename From>
-[[nodiscard]] constexpr To private_base_cast(From &from) noexcept
+//
+// It is SFINAE-friendly like the builtin casts
+template<typename CvRefTo, typename CvFrom, typename CvTo = std::remove_reference_t<CvRefTo>>
+requires std::is_reference_v<CvRefTo> &&
+         std::is_base_of_v<CvTo, CvFrom> &&
+         (!std::is_const_v<CvFrom> || std::is_const_v<CvTo>) &&
+         (!std::is_volatile_v<CvFrom> || std::is_volatile_v<CvTo>)
+[[nodiscard]] constexpr CvRefTo private_base_cast(CvFrom &from) noexcept
 {
-    static_assert(std::is_reference_v<To>, "`To` is not a reference");
-
-    static_assert(
-        std::is_base_of_v<std::remove_cvref_t<To>, std::remove_cvref_t<From>>,
-        "`To` is not base of `From`"
-    );
-
-    using cv_from_t = std::remove_reference_t<From>;
-    using cv_to_t = std::remove_reference_t<To>;
-    static_assert(
-        !std::is_const_v<cv_from_t> || std::is_const_v<cv_to_t>,
-        "You can't cast `const` away"
-    );
-    static_assert(
-        !std::is_volatile_v<cv_from_t> || std::is_volatile_v<cv_to_t>,
-        "You can't cast `volatile` away"
-    );
-
-    return (To)from;
+    return (CvRefTo)from;
 }
 
 template<typename To, typename From>
-[[nodiscard]] constexpr To private_base_cast(From &&from) noexcept //
+[[nodiscard]] constexpr To private_base_cast(From &&from) noexcept
+#if __cpp_deleted_function >= 202403L
     = delete("Casting a temporary to a reference may produce a dangling reference");
+#else
+    = delete;
+#endif
+
+// clang-format on
 
 } // namespace siga::util
