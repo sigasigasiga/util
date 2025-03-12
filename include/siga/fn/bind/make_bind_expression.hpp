@@ -16,9 +16,10 @@ bind_expression(F) -> bind_expression<F>;
 
 template<typename F>
 [[nodiscard]] constexpr auto make_bind_expression(F &&fn)
-    noexcept(std::is_nothrow_constructible_v<std::decay_t<F>, F &&>)
+    noexcept(noexcept(bind_expression(std::forward<F>(fn)))) //
+    -> decltype(bind_expression(std::forward<F>(fn)))
 {
-    return bind_expression<std::decay_t<F>>(std::forward<F>(fn));
+    return bind_expression(std::forward<F>(fn));
 }
 
 } // namespace siga::fn::bind
