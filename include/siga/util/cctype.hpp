@@ -18,8 +18,9 @@ namespace siga::util {
 [[nodiscard]] inline bool is_space(unsigned char c) noexcept { return std::isspace(c); }
 [[nodiscard]] inline bool is_upper(unsigned char c) noexcept { return std::isupper(c); }
 [[nodiscard]] inline bool is_xdigit(unsigned char c) noexcept { return std::isxdigit(c); }
-[[nodiscard]] inline bool to_lower(unsigned char c) noexcept { return std::tolower(c); }
-[[nodiscard]] inline bool to_upper(unsigned char c) noexcept { return std::toupper(c); }
+
+[[nodiscard]] inline char to_lower(unsigned char c) noexcept { return std::tolower(c); }
+[[nodiscard]] inline char to_upper(unsigned char c) noexcept { return std::toupper(c); }
 
 // clang-format on
 
