@@ -73,4 +73,13 @@ if get_option('tests').enabled()
       dependencies: [siga_util_dep]
     )
   )
+
+  test(
+    'to_address.cpp',
+    executable(
+      'to_address',
+      'test/to_address.cpp',
+      dependencies: [siga_util_dep]
+    )
+  )
 endif

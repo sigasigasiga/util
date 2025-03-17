@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <type_traits>
 #include <utility>
 
@@ -26,7 +27,7 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 
 // -------------------------------------------------------------------------------------------------
 
-template<std::size_t P>
+template<std::uintmax_t P>
 class overload_priority : public overload_priority<P - 1>
 {};
 

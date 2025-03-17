@@ -15,7 +15,7 @@ namespace siga::ranges {
 // It is better then `views::iota(0uz, size) | views::transform(siga::fn::bind::index_in(ptr))`
 // because it only stores 2 pointers, while this combined view stores two `std::size_t`s and a ptr
 template<typename Ptr, typename Sent>
-requires requires(Ptr ptr, Sent sent) { util::to_address(ptr) == sent; }
+requires requires(Ptr ptr, Sent sent) { util::to_address_arr(ptr) == sent; }
 class [[nodiscard]] pointer_view : public std::ranges::view_interface<pointer_view<Ptr, Sent>>
 {
 public:
@@ -27,12 +27,12 @@ public:
 
     constexpr pointer_view(Ptr ptr, std::size_t n)
         : ptr_{std::move(ptr)}
-        , sent_{util::to_address(ptr_) + n}
+        , sent_{util::to_address_arr(ptr_) + n}
     {
     }
 
 public:
-    [[nodiscard]] constexpr auto begin() const { return util::to_address(ptr_); }
+    [[nodiscard]] constexpr auto begin() const { return util::to_address_arr(ptr_); }
     [[nodiscard]] constexpr auto end() const { return sent_; }
 
 private:
