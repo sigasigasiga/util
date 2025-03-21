@@ -18,6 +18,7 @@ public:
 
 public:
     [[noreturn]] void throw_exception() const { std::rethrow_exception(ep_); }
+    [[nodiscard]] std::exception_ptr get_exception_ptr() const { return ep_; }
 
 private:
     std::exception_ptr ep_;
@@ -44,8 +45,17 @@ public:
     {
     }
 
+    template<typename ExDerived>
+    requires std::is_convertible_v<ExDerived *, ExBase *> && //
+             (!std::is_same_v<ExDerived, ExBase>)
+    polymorphic_exception_storage(const polymorphic_exception_storage<ExDerived> &rhs)
+        : storage_{rhs.get_storage()}
+    {
+    }
+
 public:
     [[noreturn]] void throw_exception() const { storage_.throw_exception(); }
+    [[nodiscard]] exception_storage get_storage() const { return storage_; }
 
 private:
     // cannot use inheritance because the invariant may be violated:
