@@ -1,6 +1,7 @@
 #pragma once
 
 #include <exception>
+#include <type_traits>
 
 namespace siga::util {
 
@@ -26,7 +27,8 @@ private:
 
 // like `exception_storage` but stores only exceptions that are `ExBase` or publicly derived from it
 template<typename ExBase>
-class [[nodiscard]] polymorhpic_exception_storage // TODO: come up with a better name?
+class [[nodiscard]] polymorphic_exception_storage // TODO: come up with a better name?
+                                                  // because `int` is suitable too
 {
     static_assert(
         std::is_same_v<ExBase, std::remove_cvref_t<ExBase>>,
@@ -36,8 +38,8 @@ class [[nodiscard]] polymorhpic_exception_storage // TODO: come up with a better
 public:
     template<typename FwdEx = ExBase, typename Ex = std::remove_cvref_t<FwdEx>>
     requires std::is_convertible_v<Ex *, ExBase *> &&
-             (!std::is_same_v<Ex, polymorhpic_exception_storage>)
-    explicit polymorhpic_exception_storage(FwdEx &&fwd_ex)
+             (!std::is_same_v<Ex, polymorphic_exception_storage>)
+    explicit polymorphic_exception_storage(FwdEx &&fwd_ex)
         : storage_{std::forward<FwdEx>(fwd_ex)}
     {
     }
@@ -59,5 +61,8 @@ private:
     // ```
     exception_storage storage_;
 };
+
+template<typename Ex>
+polymorphic_exception_storage(Ex) -> polymorphic_exception_storage<Ex>;
 
 } // namespace siga::util
