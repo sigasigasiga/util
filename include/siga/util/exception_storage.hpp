@@ -21,7 +21,7 @@ public:
     template<typename FwdEx = ExBase, typename Ex = std::remove_cvref_t<FwdEx>>
     requires std::is_convertible_v<Ex *, ExBase *> && //
              (!std::is_same_v<Ex, exception_storage>)
-    explicit exception_storage(FwdEx &&fwd_ex)
+    explicit constexpr exception_storage(FwdEx &&fwd_ex) noexcept
         : ep_{std::make_exception_ptr(std::forward<FwdEx>(fwd_ex))}
     {
     }
@@ -29,14 +29,14 @@ public:
     template<typename ExDerived>
     requires std::is_convertible_v<ExDerived *, ExBase *> && //
              (!std::is_same_v<ExDerived, ExBase>)
-    exception_storage(const exception_storage<ExDerived> &rhs)
+    constexpr exception_storage(const exception_storage<ExDerived> &rhs) noexcept
         : ep_{rhs.get_exception_ptr()}
     {
     }
 
 public:
-    [[noreturn]] void throw_exception() const { std::rethrow_exception(ep_); }
-    [[nodiscard]] std::exception_ptr get_exception_ptr() const { return ep_; }
+    [[noreturn]] constexpr void throw_exception() const { std::rethrow_exception(ep_); }
+    [[nodiscard]] constexpr std::exception_ptr get_exception_ptr() const noexcept { return ep_; }
 
 private:
     std::exception_ptr ep_;
