@@ -5,14 +5,32 @@
 
 namespace siga::util {
 
-// like `std::exception_ptr` but has value semantics and cannot be null
+// like `std::exception_ptr` but:
+// 1. has value semantics
+// 2. cannot be null
+// 3. stores exceptions that are convertible to `ExBase` by pointer (`ExBase` may be `void`)
+template<typename ExBase>
 class [[nodiscard]] exception_storage
 {
+    static_assert(
+        std::is_same_v<ExBase, std::remove_cvref_t<ExBase>>,
+        "`ExBase` must be cvref-unqualified"
+    );
+
 public:
-    template<typename Ex>
-    requires(!std::is_same_v<std::remove_cvref_t<Ex>, exception_storage>)
-    explicit exception_storage(Ex &&ex)
-        : ep_{std::make_exception_ptr(std::forward<Ex>(ex))}
+    template<typename FwdEx = ExBase, typename Ex = std::remove_cvref_t<FwdEx>>
+    requires std::is_convertible_v<Ex *, ExBase *> && //
+             (!std::is_same_v<Ex, exception_storage>)
+    explicit exception_storage(FwdEx &&fwd_ex)
+        : ep_{std::make_exception_ptr(std::forward<FwdEx>(fwd_ex))}
+    {
+    }
+
+    template<typename ExDerived>
+    requires std::is_convertible_v<ExDerived *, ExBase *> && //
+             (!std::is_same_v<ExDerived, ExBase>)
+    exception_storage(const exception_storage<ExDerived> &rhs)
+        : ep_{rhs.get_exception_ptr()}
     {
     }
 
@@ -24,55 +42,7 @@ private:
     std::exception_ptr ep_;
 };
 
-// -------------------------------------------------------------------------------------------------
-
-// like `exception_storage` but stores only exceptions that are `ExBase` or publicly derived from it
-template<typename ExBase>
-class [[nodiscard]] polymorphic_exception_storage // TODO: come up with a better name?
-                                                  // because `int` is suitable too
-{
-    static_assert(
-        std::is_same_v<ExBase, std::remove_cvref_t<ExBase>>,
-        "`ExBase` must be cvref-unqualified"
-    );
-
-public:
-    template<typename FwdEx = ExBase, typename Ex = std::remove_cvref_t<FwdEx>>
-    requires std::is_convertible_v<Ex *, ExBase *> &&
-             (!std::is_same_v<Ex, polymorphic_exception_storage>)
-    explicit polymorphic_exception_storage(FwdEx &&fwd_ex)
-        : storage_{std::forward<FwdEx>(fwd_ex)}
-    {
-    }
-
-    template<typename ExDerived>
-    requires std::is_convertible_v<ExDerived *, ExBase *> && //
-             (!std::is_same_v<ExDerived, ExBase>)
-    polymorphic_exception_storage(const polymorphic_exception_storage<ExDerived> &rhs)
-        : storage_{rhs.get_storage()}
-    {
-    }
-
-public:
-    [[noreturn]] void throw_exception() const { storage_.throw_exception(); }
-    [[nodiscard]] exception_storage get_storage() const { return storage_; }
-
-private:
-    // cannot use inheritance because the invariant may be violated:
-    //
-    // ```
-    // void violate_invariants(polymorhpic_exception_storage<std::exception> &f)
-    // {
-    //     polymorhpic_exception_storage<std::exception> tmp{std::exception{}};
-    //     exception_storage &evil = tmp;
-    //     evil = exception_storage{0};
-    //     f = tmp; // boom!
-    // }
-    // ```
-    exception_storage storage_;
-};
-
 template<typename Ex>
-polymorphic_exception_storage(Ex) -> polymorphic_exception_storage<Ex>;
+exception_storage(Ex) -> exception_storage<Ex>;
 
 } // namespace siga::util
