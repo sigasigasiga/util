@@ -48,7 +48,7 @@ constexpr T *impl(adl_tag, T *ptr, p<2>) noexcept
     return impl(detail_to_address::adl_tag{}, ptr, detail_to_address::p<2>{});
 }
 
-// =================================================================================================
+// -------------------------------------------------------------------------------------------------
 
 namespace detail_to_address_arr {
 

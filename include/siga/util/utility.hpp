@@ -27,6 +27,7 @@ struct [[nodiscard]] no_unique_address_if_empty<T>
 
 // -------------------------------------------------------------------------------------------------
 
+// https://stackoverflow.com/a/39905208
 template<std::uintmax_t P>
 class overload_priority : public overload_priority<P - 1>
 {};
