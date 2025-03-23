@@ -1,7 +1,5 @@
 #pragma once
 
-#include <siga/meta/apply_traits.hpp>
-#include <siga/meta/compose_traits.hpp>
 #include <siga/meta/concepts.hpp>
 #include <siga/meta/copy_cvref.hpp>
 #include <siga/meta/string_literal.hpp>
