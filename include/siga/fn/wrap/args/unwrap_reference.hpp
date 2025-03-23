@@ -9,8 +9,6 @@ namespace siga::fn::wrap::args {
 
 namespace detail_unwrap_reference {
 
-// TODO: make `apply_trait_wrap` and
-// implement `unwrap_reference` as `apply_trait_wrap<std::unwrap_reference>`?
 template<typename F>
 class [[nodiscard]] impl : private util::storage_base<F>
 {
