@@ -10,58 +10,23 @@
 #include <siga/iter/ostream_joiner.hpp>
 #include <siga/util/exception_storage.hpp>
 
-template<typename T>
-struct [[nodiscard]] result : std::expected<T, siga::util::exception_storage<std::exception>>
-{
-    using std::expected<T, siga::util::exception_storage<std::exception>>::expected;
-
-    template<typename Self>
-    decltype(auto) unwrap(this Self &&self)
-    {
-        if(self.has_value()) {
-            return *std::forward<Self>(self);
-        } else {
-            std::forward<Self>(self).error().throw_exception();
-        }
-    }
-
-private:
-    using std::expected<T, siga::util::exception_storage<std::exception>>::value;
-};
-
-template<typename Ex, typename... Args>
-auto make_error(Args &&...args)
-{
-    return std::unexpected(siga::util::exception_storage(Ex(std::forward<Args>(args)...)));
-}
-
 std::string make_include_directive(const std::filesystem::path &hpp_path)
 {
     return std::format("#include <{}>", hpp_path.generic_string());
 }
 
-result<void>
-write_header(const std::filesystem::path &canonical_dir_path, std::output_iterator<char> auto oit)
+template<std::ranges::input_range DirEntRange>
+requires std::same_as<std::filesystem::directory_entry, std::ranges::range_value_t<DirEntRange>>
+auto make_header_content(DirEntRange &&entries)
 {
-    if(canonical_dir_path.empty()) {
-        return make_error<std::runtime_error>("the path is empty");
-    }
-
-    if(canonical_dir_path.native().back() == std::filesystem::path::value_type('.')) {
-        return make_error<std::runtime_error>("the path ends with `.`");
-    }
-
     // clang-format off
-    auto includes = std::filesystem::directory_iterator{canonical_dir_path}
+    return std::forward<DirEntRange>(entries)
         | std::views::filter([](auto &&x) { return x.path().extension() == ".hpp"; })
         | std::views::filter([](auto &&p) { return p.is_regular_file(); })
         | std::views::transform(make_include_directive)
         | std::views::join_with('\n')
         ;
     // clang-format on
-
-    std::ranges::copy(includes, oit);
-    return {};
 }
 
 int main()
@@ -83,8 +48,13 @@ int main()
             std::filesystem::create_directories(base.parent_path());
         }
 
+        assert(!dir.empty());
+
         std::ofstream header_ofs{base += ".hpp", std::ios_base::out | std::ios_base::trunc};
 
-        write_header(dir, std::ostream_iterator<char>(header_ofs)).unwrap();
+        std::ranges::copy(
+            make_header_content(std::filesystem::directory_iterator{dir}),
+            std::ostream_iterator<char>(header_ofs)
+        );
     }
 }
