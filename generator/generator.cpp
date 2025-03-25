@@ -2,13 +2,9 @@
 #include <expected>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <map>
 #include <ranges>
 #include <vector>
-
-#include <siga/iter/ostream_joiner.hpp>
-#include <siga/util/exception_storage.hpp>
 
 std::string make_include_directive(const std::filesystem::path &hpp_path)
 {
@@ -44,7 +40,6 @@ int main()
     for(const auto &dir : dirs | std::views::values | std::views::join) {
         auto base = std::filesystem::relative(dir, input_path);
         if(auto parent = base.parent_path(); !parent.empty()) {
-            std::cout << "creating " << base << std::endl;
             std::filesystem::create_directories(base.parent_path());
         }
 
