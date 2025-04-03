@@ -9,7 +9,7 @@ namespace siga::fn::bind {
 namespace detail {
 
 template<typename F, typename... Args>
-[[nodiscard]] constexpr auto bind_front_unwrap(F &&f, Args &&...args)
+[[nodiscard]] constexpr auto bind_front_unwrap(F &&f, Args &&...args) //
     noexcept(noexcept(std::bind_front(
         wrap::args::unwrap_reference(std::forward<F>(f)),
         std::forward<Args>(args)...
@@ -26,7 +26,7 @@ template<typename F, typename... Args>
 }
 
 template<typename F, typename... Args>
-[[nodiscard]] constexpr auto bind_back_unwrap(F &&f, Args &&...args)
+[[nodiscard]] constexpr auto bind_back_unwrap(F &&f, Args &&...args) //
     noexcept(noexcept(compat::bind_back(
         wrap::args::unwrap_reference(std::forward<F>(f)),
         std::forward<Args>(args)...
@@ -44,9 +44,12 @@ template<typename F, typename... Args>
 
 } // namespace detail
 
+// clang-format off
+
 template<typename T>
 [[nodiscard]] constexpr auto equal_to(T &&value)
     noexcept(noexcept(detail::bind_front_unwrap(std::equal_to(), std::forward<T>(value))))
+    -> decltype(detail::bind_front_unwrap(std::equal_to(), std::forward<T>(value)))
 {
     return detail::bind_front_unwrap(std::equal_to(), std::forward<T>(value));
 }
@@ -56,6 +59,7 @@ template<typename T>
 template<typename T>
 [[nodiscard]] constexpr auto not_equal_to(T &&value)
     noexcept(noexcept(detail::bind_front_unwrap(std::not_equal_to(), std::forward<T>(value))))
+    -> decltype(detail::bind_front_unwrap(std::not_equal_to(), std::forward<T>(value)))
 {
     return detail::bind_front_unwrap(std::not_equal_to(), std::forward<T>(value));
 }
@@ -63,8 +67,9 @@ template<typename T>
 // -------------------------------------------------------------------------------------------------
 
 template<typename Container>
-[[nodiscard]] constexpr auto index_in(Container &&container
-) noexcept(noexcept(detail::bind_front_unwrap(op::subscript(), std::forward<Container>(container))))
+[[nodiscard]] constexpr auto index_in(Container &&container)
+    noexcept(noexcept(detail::bind_front_unwrap(op::subscript(), std::forward<Container>(container))))
+    -> decltype(detail::bind_front_unwrap(op::subscript(), std::forward<Container>(container)))
 {
     return detail::bind_front_unwrap(op::subscript(), std::forward<Container>(container));
 }
@@ -74,8 +79,11 @@ template<typename Container>
 template<typename Idx>
 [[nodiscard]] constexpr auto index_with(Idx &&idx)
     noexcept(noexcept(detail::bind_back_unwrap(op::subscript(), std::forward<Idx>(idx))))
+    -> decltype(detail::bind_back_unwrap(op::subscript(), std::forward<Idx>(idx)))
 {
     return detail::bind_back_unwrap(op::subscript(), std::forward<Idx>(idx));
 }
+
+// clang-format on
 
 } // namespace siga::fn::bind
