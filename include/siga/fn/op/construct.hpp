@@ -9,8 +9,8 @@ class [[nodiscard]] construct
 {
 public:
     template<typename... Args>
-    [[nodiscard]] static constexpr auto operator()(Args &&...args)
-        noexcept(noexcept(T(std::forward<Args>(args)...))) //
+    [[nodiscard]] static constexpr auto operator()(Args &&...args) //
+        noexcept(noexcept(T(std::forward<Args>(args)...)))         //
         -> decltype(T(std::forward<Args>(args)...))
     {
         return T(std::forward<Args>(args)...);
@@ -22,16 +22,17 @@ class [[nodiscard]] construct<T, false>
 {
 public:
     template<typename... Args>
-    [[nodiscard]] static constexpr auto operator()(Args &&...args)
-        noexcept(noexcept(T{std::forward<Args>(args)...})) //
+    [[nodiscard]] static constexpr auto operator()(Args &&...args) //
+        noexcept(noexcept(T{std::forward<Args>(args)...}))         //
         -> decltype(T{std::forward<Args>(args)...})
     {
         return T{std::forward<Args>(args)...};
     }
 };
 
-template<>
-class [[nodiscard]] construct<void>
+template<typename T>
+requires std::is_void_v<T>
+class [[nodiscard]] construct<T>
 {
 public:
     static constexpr void operator()() noexcept {}
