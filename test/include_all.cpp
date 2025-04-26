@@ -1,15 +1,15 @@
-#include <siga/compat.hpp>
-#include <siga/experimental.hpp>
-#include <siga/fn.hpp>
-#include <siga/iter.hpp>
-#include <siga/meta.hpp>
-#include <siga/ranges.hpp>
-#include <siga/toy.hpp>
-#include <siga/util.hpp>
+#include <grace/compat.hpp>
+#include <grace/experimental.hpp>
+#include <grace/fn.hpp>
+#include <grace/iter.hpp>
+#include <grace/meta.hpp>
+#include <grace/ranges.hpp>
+#include <grace/toy.hpp>
+#include <grace/util.hpp>
 
 int main()
 {
-    using namespace siga;
+    using namespace grace;
 
     util::ignore = algo::find(std::array{1, 2, 3}, 3);
     util::ignore = compat::bind_back(1, 1);

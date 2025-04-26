@@ -1,4 +1,4 @@
-#include <siga/util/to_address.hpp>
+#include <grace/util/to_address.hpp>
 
 void drill_down()
 {
@@ -9,7 +9,7 @@ void drill_down()
     };
 
     foo f;
-    auto x = siga::util::to_address(f);
+    auto x = grace::util::to_address(f);
     static_assert(std::same_as<decltype(x), int *>);
     if(x != f.member.get()) {
         throw drill_down;
@@ -34,7 +34,7 @@ void arrow_with_traits()
         auto operator->() const { return with_pointer_traits{}; }
     };
 
-    auto x = siga::util::to_address(foo{});
+    auto x = grace::util::to_address(foo{});
     static_assert(std::same_as<decltype(x), int *>);
     if(x != &g_dummy) {
         throw arrow_with_traits;
@@ -43,7 +43,7 @@ void arrow_with_traits()
 
 void ptr()
 {
-    int *x = siga::util::to_address(&g_dummy);
+    int *x = grace::util::to_address(&g_dummy);
     if(x != &g_dummy) {
         throw ptr;
     }
@@ -62,7 +62,7 @@ struct std::pointer_traits<both>
 
 void test_both()
 {
-    auto x = siga::util::to_address(both{});
+    auto x = grace::util::to_address(both{});
     static_assert(std::same_as<decltype(x), int *>);
     if(x != &g_dummy) {
         throw test_both;
@@ -72,11 +72,11 @@ void test_both()
 void smart_arr()
 {
     auto f = std::make_unique<int[]>(0);
-    if(f.get() != siga::util::to_address_arr(f)) {
+    if(f.get() != grace::util::to_address_arr(f)) {
         throw smart_arr;
     }
 
-    if(&g_dummy != siga::util::to_address_arr(&g_dummy)) {
+    if(&g_dummy != grace::util::to_address_arr(&g_dummy)) {
         throw smart_arr;
     }
 }

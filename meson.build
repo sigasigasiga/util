@@ -2,13 +2,13 @@
 # ```
 # meson setup --cross-file brew-cross.ini -Dtests=enabled bin
 # ```
-project('siga-util', 'cpp', default_options : [ 'cpp_std=c++26' ])
+project('grace', 'cpp', default_options : [ 'cpp_std=c++26' ])
 
-siga_util_dep = declare_dependency(
+grace_dep = declare_dependency(
   include_directories: include_directories('include')
 )
 
-meson.override_dependency('siga-util', siga_util_dep)
+meson.override_dependency('grace', grace_dep)
 
 if get_option('tests').enabled()
   test(
@@ -16,7 +16,7 @@ if get_option('tests').enabled()
     executable(
       'make_bitset',
       'test/bitset.cpp',
-      dependencies: [siga_util_dep]
+      dependencies: [grace_dep]
     )
   )
 
@@ -25,7 +25,7 @@ if get_option('tests').enabled()
     executable(
       'forward_ref',
       'test/forward_ref.cpp',
-      dependencies: [siga_util_dep]
+      dependencies: [grace_dep]
     )
   )
 
@@ -34,7 +34,7 @@ if get_option('tests').enabled()
     executable(
       'read_only_value',
       'test/read_only_value.cpp',
-      dependencies: [siga_util_dep]
+      dependencies: [grace_dep]
     )
   )
 
@@ -43,7 +43,7 @@ if get_option('tests').enabled()
     executable(
       'stored_func_invoker',
       'test/stored_func_invoker.cpp',
-      dependencies: [siga_util_dep]
+      dependencies: [grace_dep]
     )
   )
 
@@ -52,7 +52,7 @@ if get_option('tests').enabled()
     executable(
       'include_all',
       'test/include_all.cpp',
-      dependencies: [siga_util_dep]
+      dependencies: [grace_dep]
     )
   )
 
@@ -61,7 +61,7 @@ if get_option('tests').enabled()
     executable(
       'tuple_fold_invoke',
       'test/tuple_fold_invoke.cpp',
-      dependencies: [siga_util_dep]
+      dependencies: [grace_dep]
     )
   )
 
@@ -70,7 +70,7 @@ if get_option('tests').enabled()
     executable(
       'consign_view',
       'test/consign_view.cpp',
-      dependencies: [siga_util_dep]
+      dependencies: [grace_dep]
     )
   )
 
@@ -79,7 +79,7 @@ if get_option('tests').enabled()
     executable(
       'to_address',
       'test/to_address.cpp',
-      dependencies: [siga_util_dep]
+      dependencies: [grace_dep]
     )
   )
 endif

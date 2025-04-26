@@ -1,10 +1,10 @@
-#include <siga/fn/bind/stored_func_invoker.hpp>
+#include <grace/fn/bind/stored_func_invoker.hpp>
 
 namespace {
 
 constexpr void test_storage_assignment()
 {
-    using namespace siga::util;
+    using namespace grace::util;
 
     // it:
     // 1. compiles
@@ -41,7 +41,7 @@ bool test_cvref()
         constexpr int operator()() const volatile && { return 8; }
     };
 
-    using namespace siga::fn::bind;
+    using namespace grace::fn::bind;
 
     constexpr stored_func_invoker inv{tester{}};
     auto copy = inv;
