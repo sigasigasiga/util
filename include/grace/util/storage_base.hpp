@@ -9,11 +9,10 @@
 namespace grace::util {
 
 template<typename T>
-class [[nodiscard]] storage_base : private no_unique_address_if_empty<T>
+class [[nodiscard]] storage_base
 {
 private:
     static_assert(!std::same_as<T, std::in_place_t>);
-    using storage = no_unique_address_if_empty<T>;
 
     template<typename U>
     friend class storage_base;
@@ -49,7 +48,7 @@ public:
     constexpr
     storage_base(const storage_base<U> &value)
         noexcept(std::is_nothrow_copy_constructible_v<T>)
-        : storage{ .value_ = value.get() }
+        : value_(value.get())
     {
     }
     // clang-format on
@@ -71,30 +70,36 @@ public:
     constexpr
     storage_base(storage_base<U> &&value)
         noexcept(std::is_nothrow_move_constructible_v<T>)
-        : storage{ .value_ = std::move(value).get() }
+        : value_(std::move(value).get())
     {
     }
     // clang-format on
 
     // (6)
+    // clang-format off
     template<typename... Args>
     requires std::is_constructible_v<T, Args...>
     constexpr explicit storage_base(std::in_place_t, Args &&...args)
         noexcept(std::is_nothrow_constructible_v<T, Args...>) // strengthened
-        : storage{.value_ = T(std::forward<Args>(args)...)}
+        : value_(std::forward<Args>(args)...)
     {
     }
+    // clang-format on
 
     // (7)
+    // clang-format off
     template<typename U, typename... Args>
     requires std::is_constructible_v<T, std::initializer_list<U> &, Args...>
-    constexpr explicit storage_base(std::in_place_t, std::initializer_list<U> ilist, Args &&...args)
-        noexcept(
-            std::is_nothrow_constructible_v<T, std::initializer_list<U> &, Args...> // strengthened
-        )
-        : storage{.value_ = T(ilist, std::forward<Args>(args)...)}
+    constexpr explicit storage_base(
+        std::in_place_t,
+        std::initializer_list<U> ilist,
+        Args &&...args
+    )
+        noexcept(std::is_nothrow_constructible_v<T, std::initializer_list<U> &, Args...>) // strengthened
+        : value_(ilist, std::forward<Args>(args)...)
     {
     }
+    // clang-format on
 
     // (8)
     // clang-format off
@@ -107,7 +112,7 @@ public:
     constexpr
     storage_base(U &&value)
         noexcept(std::is_nothrow_constructible_v<T, U>) // strengthened
-        : storage{ .value_ = T(std::forward<U>(value)) }
+        : value_(std::forward<U>(value))
     {
     }
     // clang-format on
@@ -191,6 +196,9 @@ protected:
     {
         return (private_base_cast<USelf>)(self).value_;
     }
+
+private:
+    GRACE_COMPAT_NO_UNIQUE_ADDRESS T value_;
 };
 
 // As in `optional`, we have a single deducing guide here

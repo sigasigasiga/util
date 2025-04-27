@@ -12,21 +12,6 @@ namespace grace::util {
 
 // `util/utility.hpp` sounds funny, but I was trying to somehow resemble the `<utility>` STL header
 
-template<typename T>
-struct [[nodiscard]] no_unique_address_if_empty
-{
-    T value_;
-};
-
-template<typename T>
-requires std::is_empty_v<T>
-struct [[nodiscard]] no_unique_address_if_empty<T>
-{
-    GRACE_COMPAT_NO_UNIQUE_ADDRESS T value_;
-};
-
-// -------------------------------------------------------------------------------------------------
-
 // https://stackoverflow.com/a/39905208
 template<std::uintmax_t P>
 class overload_priority : public overload_priority<P - 1>
