@@ -54,7 +54,6 @@ bool test_cvref()
         return 3;
     };
 
-    // clang-format off
     return
         inv() == 1 &&
         std::as_const(inv)() == 2 &&
@@ -65,7 +64,6 @@ bool test_cvref()
         std::move(as_volatile(inv))() == 7 &&
         std::move(std::as_const(as_volatile(inv)))() == 8
     ;
-    // clang-format on
 };
 
 } // anonymous namespace

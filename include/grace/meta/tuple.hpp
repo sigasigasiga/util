@@ -8,13 +8,11 @@ namespace grace::meta {
 
 namespace detail_tuple_like {
 
-// clang-format off
 template<typename T, std::size_t I, typename FwdTuple>
 concept convertible_to_tuple_element = std::convertible_to<
     T,
     typename std::tuple_element<I, std::remove_reference_t<FwdTuple>>::type &&
 >;
-// clang-format on
 
 template<std::size_t I, typename FwdTuple>
 concept member_gettable = requires(FwdTuple &&tup) {

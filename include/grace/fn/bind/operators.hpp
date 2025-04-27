@@ -9,11 +9,11 @@ namespace grace::fn::bind {
 namespace detail {
 
 template<typename F, typename... Args>
-[[nodiscard]] constexpr auto bind_front_unwrap(F &&f, Args &&...args) //
+[[nodiscard]] constexpr auto bind_front_unwrap(F &&f, Args &&...args)
     noexcept(noexcept(std::bind_front(
         wrap::args::unwrap_reference(std::forward<F>(f)),
         std::forward<Args>(args)...
-    ))) //
+    )))
     -> decltype(std::bind_front(
         wrap::args::unwrap_reference(std::forward<F>(f)),
         std::forward<Args>(args)...
@@ -26,11 +26,11 @@ template<typename F, typename... Args>
 }
 
 template<typename F, typename... Args>
-[[nodiscard]] constexpr auto bind_back_unwrap(F &&f, Args &&...args) //
+[[nodiscard]] constexpr auto bind_back_unwrap(F &&f, Args &&...args)
     noexcept(noexcept(compat::bind_back(
         wrap::args::unwrap_reference(std::forward<F>(f)),
         std::forward<Args>(args)...
-    ))) //
+    )))
     -> decltype(compat::bind_back(
         wrap::args::unwrap_reference(std::forward<F>(f)),
         std::forward<Args>(args)...
@@ -43,8 +43,6 @@ template<typename F, typename... Args>
 }
 
 } // namespace detail
-
-// clang-format off
 
 template<typename T>
 [[nodiscard]] constexpr auto equal_to(T &&value)
@@ -83,7 +81,5 @@ template<typename Idx>
 {
     return detail::bind_back_unwrap(op::subscript(), std::forward<Idx>(idx));
 }
-
-// clang-format on
 
 } // namespace grace::fn::bind

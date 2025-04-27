@@ -11,7 +11,7 @@ namespace grace::util {
 // 2. We cast the invoke result to `void` in order to avoid calling overloaded `operator,`
 template<typename F, typename... Args>
 constexpr auto for_each_in_parameter_pack(F fn, Args &&...args)
-    noexcept(noexcept((..., static_cast<void>(std::invoke(fn, std::forward<Args>(args)))), fn)) //
+    noexcept(noexcept((..., static_cast<void>(std::invoke(fn, std::forward<Args>(args)))), fn))
     -> decltype((..., static_cast<void>(std::invoke(fn, std::forward<Args>(args)))), fn)
 {
     return (..., static_cast<void>(std::invoke(fn, std::forward<Args>(args)))), fn;

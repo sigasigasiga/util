@@ -13,7 +13,7 @@ public:
     template<typename U> // do not require it to be tuple-like, as it may also be a variant
     requires(!requires(U &&v) { std::forward<U>(v).template get<T>(); })
     [[nodiscard]] static constexpr auto operator()(U &&val)
-        noexcept(noexcept(get<T>(std::forward<U>(val)))) //
+        noexcept(noexcept(get<T>(std::forward<U>(val))))
         -> decltype(get<T>(std::forward<U>(val)))
     {
         return get<T>(std::forward<U>(val));
@@ -21,7 +21,7 @@ public:
 
     template<typename U>
     [[nodiscard]] static constexpr auto operator()(U &&val)
-        noexcept(noexcept(std::forward<U>(val).template get<T>())) //
+        noexcept(noexcept(std::forward<U>(val).template get<T>()))
         -> decltype(std::forward<U>(val).template get<T>())
     {
         return std::forward<U>(val).template get<T>();
@@ -35,7 +35,7 @@ public:
     template<typename U> // do not require it to be tuple-like, as it may also be a variant
     requires(!requires(U &&v) { std::forward<U>(v).template get<V>(); })
     [[nodiscard]] static constexpr auto operator()(U &&val)
-        noexcept(noexcept(get<V>(std::forward<U>(val)))) //
+        noexcept(noexcept(get<V>(std::forward<U>(val))))
         -> decltype(get<V>(std::forward<U>(val)))
     {
         return get<V>(std::forward<U>(val));
@@ -43,7 +43,7 @@ public:
 
     template<typename U>
     [[nodiscard]] static constexpr auto operator()(U &&val)
-        noexcept(noexcept(std::forward<U>(val).template get<V>())) //
+        noexcept(noexcept(std::forward<U>(val).template get<V>()))
         -> decltype(std::forward<U>(val).template get<V>())
     {
         return std::forward<U>(val).template get<V>();
@@ -70,7 +70,7 @@ class [[nodiscard]] get_key
 public:
     template<meta::pair_like FwdPair>
     [[nodiscard]] static constexpr auto operator()(FwdPair &&pair)
-        noexcept(noexcept(get<0>(std::forward<FwdPair>(pair)))) //
+        noexcept(noexcept(get<0>(std::forward<FwdPair>(pair))))
         -> decltype(get<0>(std::forward<FwdPair>(pair)))
     {
         return get<0>(std::forward<FwdPair>(pair));
@@ -82,7 +82,7 @@ class [[nodiscard]] get_value
 public:
     template<meta::pair_like FwdPair>
     [[nodiscard]] static constexpr auto operator()(FwdPair &&pair)
-        noexcept(noexcept(get<1>(std::forward<FwdPair>(pair)))) //
+        noexcept(noexcept(get<1>(std::forward<FwdPair>(pair))))
         -> decltype(get<1>(std::forward<FwdPair>(pair)))
     {
         return get<1>(std::forward<FwdPair>(pair));

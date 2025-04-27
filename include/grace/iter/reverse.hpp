@@ -5,7 +5,7 @@
 namespace grace::iter {
 
 template<typename Container>
-[[nodiscard]] constexpr auto rerase( //
+[[nodiscard]] constexpr auto rerase(
     Container &container,
     std::reverse_iterator<typename Container::iterator> rit
 )

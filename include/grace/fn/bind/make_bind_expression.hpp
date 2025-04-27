@@ -16,7 +16,7 @@ bind_expression(F) -> bind_expression<F>;
 
 template<typename F>
 [[nodiscard]] constexpr auto make_bind_expression(F &&fn)
-    noexcept(noexcept(bind_expression(std::forward<F>(fn)))) //
+    noexcept(noexcept(bind_expression(std::forward<F>(fn))))
     -> decltype(bind_expression(std::forward<F>(fn)))
 {
     return bind_expression(std::forward<F>(fn));

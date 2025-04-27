@@ -32,7 +32,6 @@ public:
     constexpr storage_base(storage_base &&) = default;
 
     // (4)
-    // clang-format off
     template<typename U>
     requires
         std::is_constructible_v<T, const U &> &&
@@ -51,10 +50,8 @@ public:
         : value_(value.get())
     {
     }
-    // clang-format on
 
     // (5)
-    // clang-format off
     template<typename U>
     requires
         std::is_constructible_v<T, const U &> &&
@@ -73,10 +70,8 @@ public:
         : value_(std::move(value).get())
     {
     }
-    // clang-format on
 
     // (6)
-    // clang-format off
     template<typename... Args>
     requires std::is_constructible_v<T, Args...>
     constexpr explicit storage_base(std::in_place_t, Args &&...args)
@@ -84,10 +79,8 @@ public:
         : value_(std::forward<Args>(args)...)
     {
     }
-    // clang-format on
 
     // (7)
-    // clang-format off
     template<typename U, typename... Args>
     requires std::is_constructible_v<T, std::initializer_list<U> &, Args...>
     constexpr explicit storage_base(
@@ -99,10 +92,8 @@ public:
         : value_(ilist, std::forward<Args>(args)...)
     {
     }
-    // clang-format on
 
     // (8)
-    // clang-format off
     template<typename U = T>
     requires
         std::is_constructible_v<T, U &&> &&
@@ -115,7 +106,6 @@ public:
         : value_(std::forward<U>(value))
     {
     }
-    // clang-format on
 
 public:
     // https://en.cppreference.com/w/cpp/utility/optional/operator%3D
@@ -130,7 +120,6 @@ public:
     constexpr storage_base &operator=(storage_base &&) = default;
 
     // (4)
-    // clang-format off
     template<typename U = T>
     requires
         (!std::same_as<std::remove_cvref_t<U>, storage_base<T>>) &&
@@ -146,10 +135,8 @@ public:
         this->value_ = std::forward<U>(value);
         return *this;
     }
-    // clang-format on
 
     // (5)
-    // clang-format off
     template<typename U>
     requires
         (!std::is_convertible_v<storage_base<U> &, T>) &&
@@ -167,10 +154,8 @@ public:
         this->value_ = rhs.value();
         return *this;
     }
-    // clang-format on
 
     // (6)
-    // clang-format off
     template<typename U>
     requires
         (!std::is_convertible_v<storage_base<U> &, T>) &&
@@ -188,7 +173,6 @@ public:
         this->value_ = std::move(rhs).value();
         return *this;
     }
-    // clang-format on
 
 protected:
     template<typename Self, typename USelf = meta::copy_cvref_t<Self &&, storage_base>>

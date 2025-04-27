@@ -12,7 +12,7 @@ namespace detail {
 
 template<typename... Args>
 constexpr auto my_bind_back(Args &&...args)
-    noexcept(noexcept(std::bind_back(std::forward<Args>(args)...))) //
+    noexcept(noexcept(std::bind_back(std::forward<Args>(args)...)))
     -> decltype(std::bind_back(std::forward<Args>(args)...))
 {
     return std::bind_back(std::forward<Args>(args)...);
@@ -24,7 +24,6 @@ template<typename F, typename... Args>
 constexpr auto my_bind_back(F &&fn, Args &&...args)
     noexcept(noexcept([_ = std::forward<F>(fn), ... _(std::forward<Args>(args))] {}))
 {
-    // clang-format off
     return
         [
             fn = std::forward<F>(fn),
@@ -52,7 +51,6 @@ constexpr auto my_bind_back(F &&fn, Args &&...args)
                 std::forward_like<Self>(bound_args)...
             );
         };
-    // clang-format on
 }
 
 #endif // __cpp_lib_bind_back

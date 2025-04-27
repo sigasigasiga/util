@@ -23,8 +23,6 @@ class overload_priority<0>
 
 // -------------------------------------------------------------------------------------------------
 
-// clang-format off
-
 // works with explicit copy constructors
 template<typename T>
 [[nodiscard]] constexpr auto copy(const T &v)
@@ -33,7 +31,6 @@ template<typename T>
 {
     return T(v);
 }
-// clang-format on
 
 // -------------------------------------------------------------------------------------------------
 
@@ -41,7 +38,7 @@ template<typename T>
 // works with explicit copy constructors
 template<typename T>
 [[nodiscard]] constexpr auto decay_copy(T &&value)
-    noexcept(noexcept(std::decay_t<T>(std::forward<T>(value)))) //
+    noexcept(noexcept(std::decay_t<T>(std::forward<T>(value))))
     -> decltype(std::decay_t<T>(std::forward<T>(value)))
 {
     return std::decay_t<T>(std::forward<T>(value));
@@ -51,8 +48,8 @@ template<typename T>
 
 // usage: `cut_rvalue_ref(std::forward<T>(val))`
 template<typename T>
-[[nodiscard]] auto cut_rvalue_ref(T &&value)                   //
-    noexcept(noexcept(static_cast<T>(std::forward<T>(value)))) //
+[[nodiscard]] auto cut_rvalue_ref(T &&value)
+    noexcept(noexcept(static_cast<T>(std::forward<T>(value))))
     -> decltype(static_cast<T>(std::forward<T>(value)))
 {
     // cut_rvalue_ref(0) -> cut_rvalue_ref<int>(int &&);
@@ -79,8 +76,6 @@ template<typename T>
 
 // -------------------------------------------------------------------------------------------------
 
-// clang-format off
-
 // https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r7.html#the-shadowing-mitigation-private-inheritance-problem
 //
 // It is SFINAE-friendly like the builtin casts
@@ -93,8 +88,6 @@ requires std::is_reference_v<CvRefTo> &&
 {
     return (CvRefTo)from;
 }
-
-// clang-format on
 
 // -------------------------------------------------------------------------------------------------
 

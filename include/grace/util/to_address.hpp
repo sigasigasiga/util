@@ -17,7 +17,7 @@ class adl_tag
 
 template<typename Ptr>
 constexpr auto impl(adl_tag, const Ptr &ptr, p<0>)
-    noexcept(noexcept(impl(adl_tag{}, ptr.operator->(), p<2>{}))) //
+    noexcept(noexcept(impl(adl_tag{}, ptr.operator->(), p<2>{})))
     -> decltype(impl(adl_tag{}, ptr.operator->(), p<2>{}))
 {
     return impl(adl_tag{}, ptr.operator->(), p<2>{});
@@ -25,7 +25,7 @@ constexpr auto impl(adl_tag, const Ptr &ptr, p<0>)
 
 template<typename Ptr>
 constexpr auto impl(adl_tag, const Ptr &ptr, p<1>)
-    noexcept(noexcept(std::pointer_traits<Ptr>::to_address(ptr))) //
+    noexcept(noexcept(std::pointer_traits<Ptr>::to_address(ptr)))
     -> decltype(std::pointer_traits<Ptr>::to_address(ptr))
 {
     return std::pointer_traits<Ptr>::to_address(ptr);
@@ -42,7 +42,7 @@ constexpr T *impl(adl_tag, T *ptr, p<2>) noexcept
 
 // like `std::to_address` but is SFINAE-friendly
 [[nodiscard]] constexpr auto to_address(const auto &ptr)
-    noexcept(noexcept(impl(detail_to_address::adl_tag{}, ptr, detail_to_address::p<2>{}))) //
+    noexcept(noexcept(impl(detail_to_address::adl_tag{}, ptr, detail_to_address::p<2>{})))
     -> decltype(impl(detail_to_address::adl_tag{}, ptr, detail_to_address::p<2>{}))
 {
     return impl(detail_to_address::adl_tag{}, ptr, detail_to_address::p<2>{});
@@ -68,8 +68,8 @@ requires requires(std::size_t i) {
 }
 
 template<typename Ptr>
-constexpr auto impl(const Ptr &ptr, overload_priority<1>) //
-    noexcept(noexcept((to_address)(ptr)))                 //
+constexpr auto impl(const Ptr &ptr, overload_priority<1>)
+    noexcept(noexcept((to_address)(ptr)))
     -> decltype((to_address)(ptr))
 {
     return (to_address)(ptr);
@@ -79,7 +79,7 @@ constexpr auto impl(const Ptr &ptr, overload_priority<1>) //
 
 // same as `grace::util::to_address` but supports `{unique,shared}_ptr<T[]>`
 [[nodiscard]] constexpr auto to_address_arr(const auto &ptr)
-    noexcept(noexcept(detail_to_address_arr::impl(ptr, overload_priority<1>{}))) //
+    noexcept(noexcept(detail_to_address_arr::impl(ptr, overload_priority<1>{})))
     -> decltype(detail_to_address_arr::impl(ptr, overload_priority<1>{}))
 {
     return detail_to_address_arr::impl(ptr, overload_priority<1>{});

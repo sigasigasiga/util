@@ -5,8 +5,6 @@
 
 namespace grace::util {
 
-// clang-format off
-
 // the last one in the pack is the first one in the bitset, as in `bitset`'s constructor
 // you may use `util::reverse_arguments` to fix that
 template<typename... Args, std::size_t Sz = sizeof...(Args)>
@@ -16,6 +14,5 @@ template<typename... Args, std::size_t Sz = sizeof...(Args)>
 {
     return std::bitset<Sz>{std::array{(std::forward<Args>(args) ? '1' : '0')...}.data(), Sz};
 }
-// clang-format on
 
 } // namespace grace::util

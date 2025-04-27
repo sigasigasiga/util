@@ -11,7 +11,7 @@ class [[nodiscard]] decay_copy
 public:
     template<typename T>
     [[nodiscard]] static constexpr auto operator()(T &&value)
-        noexcept(noexcept(util::decay_copy(std::forward<T>(value)))) //
+        noexcept(noexcept(util::decay_copy(std::forward<T>(value))))
         -> decltype(util::decay_copy(std::forward<T>(value)))
     {
         return util::decay_copy(std::forward<T>(value));

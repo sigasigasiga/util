@@ -18,7 +18,7 @@ public:
 public:
     template<typename Self, typename USelf = meta::copy_cvref_t<Self &&, impl>>
     constexpr auto operator()(this Self &&self, auto &&...)
-        noexcept(noexcept(std::invoke(util::private_base_cast<USelf>(self).value()))) //
+        noexcept(noexcept(std::invoke(util::private_base_cast<USelf>(self).value())))
         -> decltype(std::invoke(util::private_base_cast<USelf>(self).value()))
     {
         return std::invoke(util::private_base_cast<USelf>(self).value());
@@ -32,7 +32,7 @@ impl(T) -> impl<T>;
 
 template<std::invocable F>
 [[nodiscard]] constexpr auto ignore(F &&fn)
-    noexcept(noexcept(detail_ignore::impl(std::forward<F>(fn)))) //
+    noexcept(noexcept(detail_ignore::impl(std::forward<F>(fn))))
     -> decltype(detail_ignore::impl(std::forward<F>(fn)))
 {
     return detail_ignore::impl(std::forward<F>(fn));

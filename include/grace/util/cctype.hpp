@@ -4,8 +4,6 @@
 
 namespace grace::util {
 
-// clang-format off
-
 [[nodiscard]] inline bool is_alnum(unsigned char c) noexcept { return std::isalnum(c); }
 [[nodiscard]] inline bool is_alpha(unsigned char c) noexcept { return std::isalpha(c); }
 [[nodiscard]] inline bool is_blank(unsigned char c) noexcept { return std::isblank(c); }
@@ -21,7 +19,5 @@ namespace grace::util {
 
 [[nodiscard]] inline char to_lower(unsigned char c) noexcept { return std::tolower(c); }
 [[nodiscard]] inline char to_upper(unsigned char c) noexcept { return std::toupper(c); }
-
-// clang-format on
 
 } // namespace grace::util

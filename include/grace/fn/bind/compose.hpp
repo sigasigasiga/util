@@ -4,7 +4,6 @@
 
 namespace grace::fn::bind {
 
-// clang-format off
 template<typename... Fs>
 [[nodiscard]] constexpr auto compose(Fs &&...fs)
     noexcept(noexcept(std::bind_front(op::tuple_fold_invoke(), std::tuple{std::forward<Fs>(fs)...})))
@@ -12,6 +11,5 @@ template<typename... Fs>
 {
     return std::bind_front(op::tuple_fold_invoke(), std::tuple{std::forward<Fs>(fs)...});
 }
-// clang-format on
 
 } // namespace grace::fn::bind

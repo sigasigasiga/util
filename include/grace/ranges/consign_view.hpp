@@ -29,7 +29,6 @@ public:
     }
 
 public:
-    // clang-format off
     template<typename Self, typename USelf = meta::copy_cvref_t<Self &&, consign_view>>
     constexpr auto base(this Self &&self)
         noexcept(noexcept(View(std::forward<Self>(self).view_)))
@@ -58,7 +57,6 @@ public:
     {
         return std::ranges::size(this->view_);
     }
-    // clang-format on
 };
 
 namespace views {
@@ -73,7 +71,6 @@ public:
     }
 
 public:
-    // clang-format off
     template<typename Self, std::ranges::view View>
     constexpr auto operator()(this Self &&self, View &&view)
         noexcept(noexcept(consign_view(std::forward<View>(view), std::forward<Self>(self).value_)))
@@ -81,14 +78,13 @@ public:
     {
         return consign_view(std::forward<View>(view), std::forward<Self>(self).value_);
     }
-    // clang-format on
 
 private:
     Value value_;
 };
 
-constexpr auto consign(auto value)                        //
-    noexcept(noexcept(consign_closure(std::move(value)))) //
+constexpr auto consign(auto value)
+    noexcept(noexcept(consign_closure(std::move(value))))
     -> decltype(consign_closure(std::move(value)))
 {
     return consign_closure(std::move(value));

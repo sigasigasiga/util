@@ -6,8 +6,6 @@
 
 namespace grace::ranges {
 
-// clang-format off
-
 namespace detail_get_lowest_base {
 
 class adl_tag{};
@@ -37,7 +35,5 @@ template<std::ranges::range Range>
 {
     return impl(detail_get_lowest_base::adl_tag{}, std::forward<Range>(range));
 }
-
-// clang-format on
 
 } // namespace grace::ranges

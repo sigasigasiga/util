@@ -7,8 +7,6 @@
 
 namespace grace::iter {
 
-// clang-format off
-
 namespace detail_get_lowest_base {
 
 class adl_tag{};
@@ -39,7 +37,5 @@ requires std::input_or_output_iterator<std::remove_cvref_t<FwdIt>>
 {
     return impl(detail_get_lowest_base::adl_tag{}, std::forward<FwdIt>(it));
 }
-
-// clang-format on
 
 } // namespace grace::iter

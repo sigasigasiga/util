@@ -6,7 +6,6 @@
 
 namespace grace::algo {
 
-// clang-format off
 template<
     template<std::input_iterator> typename Pol = identity,
     typename I,
@@ -29,9 +28,7 @@ requires
     }
     return policy_t::from_end(first);
 }
-// clang-format on
 
-// clang-format off
 // TODO: how to implement `borrowed_iterator_t`?
 template<
     template<std::input_iterator> typename Pol = identity,
@@ -47,9 +44,7 @@ requires
 {
     return (find<Pol>)(std::ranges::begin(range), std::ranges::end(range), needle, std::ref(proj));
 }
-// clang-format on
 
-// clang-format off
 // TODO: how to implement `borrowed_iterator_t`?
 template<
     template<std::input_iterator> typename Pol = identity,
@@ -71,6 +66,5 @@ requires
         return policy_t::from_iterator(it);
     }
 }
-// clang-format on
 
 } // namespace grace::algo

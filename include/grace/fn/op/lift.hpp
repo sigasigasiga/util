@@ -3,8 +3,7 @@
 #include <functional> // IWYU: `std::ref`
 #include <utility>    // IWYU: `std::forward`
 
-// clang-format off
-#define GRACE_FN_OP_LIFT_FUNCTION_SINGLE(X)                                                         \
+#define GRACE_FN_OP_LIFT_FUNCTION_SINGLE(X)                                                        \
     []<typename... Args>(Args &&...args)                                                           \
         constexpr                                                                                  \
         static                                                                                     \
@@ -13,7 +12,6 @@
     {                                                                                              \
         return X(::std::forward<Args>(args)...);                                                   \
     }
-// clang-format on
 
 #define GRACE_FN_OP_AS_SINGLE(...) __VA_ARGS__
 
@@ -21,8 +19,6 @@
     GRACE_FN_OP_LIFT_FUNCTION_SINGLE(GRACE_FN_OP_AS_SINGLE(__VA_ARGS__))
 
 // -------------------------------------------------------------------------------------------------
-
-// clang-format off
 
 // Known limitations:
 // 1. Resulting lambda never produces an overload set.
@@ -83,8 +79,6 @@
             return ((*::std::forward<T>(value)).MEMBER); \
         } \
     }
-
-// clang-format on
 
 // https://stackoverflow.com/a/77860333/10961484
 #define GRACE_FN_OP_MAKE_MEMBER_DETAIL(MEMBER)   MEMBER
