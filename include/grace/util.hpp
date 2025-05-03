@@ -14,4 +14,5 @@
 #include <grace/util/scoped.hpp>
 #include <grace/util/shared_from_this_base.hpp>
 #include <grace/util/storage_base.hpp>
+#include <grace/util/tuple_sequence_invoke.hpp>
 #include <grace/util/utility.hpp>
