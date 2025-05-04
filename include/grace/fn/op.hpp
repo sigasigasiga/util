@@ -13,3 +13,4 @@
 #include <grace/fn/op/subscript.hpp>
 #include <grace/fn/op/throw_exception.hpp>
 #include <grace/fn/op/tuple_fold_invoke.hpp>
+#include <grace/fn/op/tuple_sequence_invoke.hpp>

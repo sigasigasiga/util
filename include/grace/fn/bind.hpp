@@ -7,4 +7,5 @@
 #include <grace/fn/bind/operators.hpp>
 #include <grace/fn/bind/overload.hpp>
 #include <grace/fn/bind/return_value.hpp>
+#include <grace/fn/bind/sequence.hpp>
 #include <grace/fn/bind/stored_func_invoker.hpp>
