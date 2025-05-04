@@ -3,6 +3,7 @@
 #include <tuple>
 
 #include <grace/meta/copy_cvref.hpp>
+#include <grace/meta/index_sequence_for_tuple.hpp>
 
 namespace grace::meta {
 
@@ -41,8 +42,7 @@ concept tuple_like =
             return (... && detail_tuple_like::adl_gettable<Is, T>);
         }
     }(
-        // compiler error messages are better if we don't use `std::tuple_size_v`
-        std::make_index_sequence<std::tuple_size<std::remove_reference_t<T>>::value>{}
+        index_sequence_for_tuple<T>()
     );
 
 template<typename T>

@@ -3,6 +3,8 @@
 #include <functional>
 #include <utility>
 
+#include <grace/meta/index_sequence_for_tuple.hpp>
+
 namespace grace::util {
 
 namespace detail_fold_invoke {
@@ -44,27 +46,24 @@ constexpr auto impl(adl_tag, std::index_sequence<I, Is...>, Tup &&tup, Args &&..
 
 } // namespace detail_fold_invoke
 
-template<
-    typename Tup,
-    typename... Args,
-    std::size_t TupSz = std::tuple_size<std::remove_reference_t<Tup>>::value /* SFINAE-friendly */>
+template<typename Tup, typename ...Args>
 constexpr auto tuple_fold_invoke(Tup &&tup, Args &&...args)
     noexcept(noexcept(detail_fold_invoke::impl(
         detail_fold_invoke::adl_tag{},
-        std::make_index_sequence<TupSz>{},
+        meta::index_sequence_for_tuple<Tup>(),
         std::forward<Tup>(tup),
         std::forward<Args>(args)...
     )))
     -> decltype(detail_fold_invoke::impl(
         detail_fold_invoke::adl_tag{},
-        std::make_index_sequence<TupSz>{},
+        meta::index_sequence_for_tuple<Tup>(),
         std::forward<Tup>(tup),
         std::forward<Args>(args)...
     ))
 {
     return detail_fold_invoke::impl(
         detail_fold_invoke::adl_tag{},
-        std::make_index_sequence<TupSz>{},
+        meta::index_sequence_for_tuple<Tup>(),
         std::forward<Tup>(tup),
         std::forward<Args>(args)...
     );
