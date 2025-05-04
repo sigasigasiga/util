@@ -9,6 +9,7 @@
 #include <grace/util/for_each_in_tuple.hpp>
 #include <grace/util/get_deleter.hpp>
 #include <grace/util/ignore.hpp>
+#include <grace/util/prepend_deleter.hpp>
 #include <grace/util/read_only_value.hpp>
 #include <grace/util/reverse_arguments.hpp>
 #include <grace/util/scoped.hpp>
