@@ -78,7 +78,10 @@ template<typename T>
 
 // https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r7.html#the-shadowing-mitigation-private-inheritance-problem
 //
-// It is SFINAE-friendly like the builtin casts
+// Notes:
+// 1. It is SFINAE-friendly like the builtin casts
+// 2. It doesn't differentiate between xvalues and prvalues like the builtin casts
+//    (e.g. `const_cast<int &&>(std::move(x))` works, but `const_cast<int &&>(3)` doesn't)
 template<typename CvRefTo, typename CvFrom, typename CvTo = std::remove_reference_t<CvRefTo>>
 requires std::is_reference_v<CvRefTo> &&
          std::is_base_of_v<CvTo, CvFrom> &&
