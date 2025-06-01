@@ -8,6 +8,8 @@
 
 namespace grace::experimental::te {
 
+namespace detail_poly {
+
 template<typename>
 class interface;
 
@@ -37,6 +39,14 @@ public:
     { return Fn(std::forward<Args>(args)...); }
 };
 
+template<typename>
+struct is_noexcept_fn_ptr : std::false_type {};
+
+template<typename Ret, typename ...Args, bool Noexcept>
+struct is_noexcept_fn_ptr<Ret (*)(Args ...) noexcept(Noexcept)> : std::bool_constant<Noexcept> {};
+
+} // namespace detail_poly
+
 template<auto Fn>
 class poly
 {
@@ -44,16 +54,13 @@ private:
     struct base { virtual ~base() = default; };
 
 private:
-    using fptr_t = decltype(&Fn.template operator()<base>);
+    using lambda_t = decltype(Fn);
+    using fptr_t = decltype(&lambda_t::template operator()<base>);
     using sig_t = std::remove_pointer_t<fptr_t>;
-
-#if 0
-    static_assert(std::is_nothrow_invocable_v<fptr_t>); // TODO: this is a compiler bug, report
-#endif
 
 private:
     std::unique_ptr<base> data_;
-    interface<sig_t> *fn_;
+    detail_poly::interface<sig_t> *fn_;
 
 public:
     poly() = default;
@@ -76,13 +83,14 @@ public:
                 typename... Args
             >
             (Base base, Args ...args)
-            static // TODO: noexcept
+            static
+            noexcept(detail_poly::is_noexcept_fn_ptr<fptr_t>::value)
         {
             using real_type_t = grace::meta::copy_cvref_t<Base, der>;
             return Fn(static_cast<real_type_t>(base).obj, std::forward<Args>(args)...);
         };
 
-        static impl<static_cast<fptr_t>(l)> i;
+        static detail_poly::impl<static_cast<fptr_t>(l)> i;
         fn_ = &i;
     }
 
