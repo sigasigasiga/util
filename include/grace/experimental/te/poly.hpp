@@ -39,12 +39,6 @@ public:
     { return Fn(std::forward<Args>(args)...); }
 };
 
-template<typename>
-struct is_noexcept_fn_ptr : std::false_type {};
-
-template<typename Ret, typename ...Args, bool Noexcept>
-struct is_noexcept_fn_ptr<Ret (*)(Args ...) noexcept(Noexcept)> : std::bool_constant<Noexcept> {};
-
 } // namespace detail_poly
 
 template<auto Fn>
@@ -80,14 +74,15 @@ public:
         constexpr auto l =
             []<
                 typename Base,
-                typename... Args
+                typename... Args,
+                typename RealType = meta::copy_cvref_t<Base, der>
             >
             (Base base, Args ...args)
             static
-            noexcept(detail_poly::is_noexcept_fn_ptr<fptr_t>::value)
+            noexcept(Fn(static_cast<RealType>(base).obj, std::forward<Args>(args)...))
+            -> decltype(Fn(static_cast<RealType>(base).obj, std::forward<Args>(args)...))
         {
-            using real_type_t = grace::meta::copy_cvref_t<Base, der>;
-            return Fn(static_cast<real_type_t>(base).obj, std::forward<Args>(args)...);
+            return Fn(static_cast<RealType>(base).obj, std::forward<Args>(args)...);
         };
 
         static detail_poly::impl<static_cast<fptr_t>(l)> i;
