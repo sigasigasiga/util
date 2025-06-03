@@ -31,7 +31,7 @@ public:
 
     template<typename FwdU, typename U = std::remove_cvref_t<FwdU>>
     requires std::convertible_to<U *, T *>
-    constexpr heap_storage(FwdU &&v)
+    constexpr heap(FwdU &&v)
         : clone_{[](const T &v) -> std::unique_ptr<T> { return std::make_unique<U>(static_cast<const U &>(v)); }}
         , data_{std::make_unique<U>(std::forward<FwdU>(v))}
     {
@@ -39,12 +39,12 @@ public:
 
     template<typename FwdU>
     requires std::convertible_to<std::remove_cvref_t<FwdU> *, T *>
-    constexpr heap_storage &operator=(FwdU &&v)
+    constexpr heap &operator=(FwdU &&v)
     {
         return util::default_assign(*this, std::forward<FwdU>(v));
     }
 
-    constexpr ~heap_storage() = default;
+    constexpr ~heap() = default;
 
 public:
     constexpr void swap(heap &rhs) noexcept
