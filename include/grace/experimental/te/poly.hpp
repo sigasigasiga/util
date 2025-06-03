@@ -91,7 +91,7 @@ public:
 
 public:
     template<typename... Args>
-    auto invoke(Args &&...args)
+    auto operator()(Args &&...args)
         noexcept(noexcept(std::invoke(*fn_, *data_, std::forward<Args>(args)...)))
         -> decltype(std::invoke(*fn_, *data_, std::forward<Args>(args)...))
     {
