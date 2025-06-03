@@ -8,7 +8,7 @@
 
 namespace grace::experimental::te {
 
-namespace detail_poly {
+namespace detail_basic_poly {
 
 template<typename>
 class interface;
@@ -39,10 +39,10 @@ public:
     { return Fn(std::forward<Args>(args)...); }
 };
 
-} // namespace detail_poly
+} // namespace detail_basic_poly
 
 template<auto Fn>
-class poly
+class basic_poly
 {
 private:
     struct base { virtual ~base() = default; };
@@ -54,13 +54,14 @@ private:
 
 private:
     std::unique_ptr<base> data_;
-    detail_poly::interface<sig_t> *fn_;
+    detail_basic_poly::interface<sig_t> *fn_;
 
 public:
-    poly() = default;
+    basic_poly() = default;
 
     template<typename T>
-    poly(T obj)
+    requires (!std::same_as<T, basic_poly>)
+    basic_poly(T obj)
     {
         struct der : base {
             der(T &&obj) : obj(std::move(obj)) {}
@@ -85,7 +86,7 @@ public:
             return Fn(static_cast<RealType>(base).obj, std::forward<Args>(args)...);
         };
 
-        static detail_poly::impl<static_cast<fptr_t>(l)> i;
+        static detail_basic_poly::impl<static_cast<fptr_t>(l)> i;
         fn_ = &i;
     }
 
