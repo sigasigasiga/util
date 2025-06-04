@@ -11,6 +11,7 @@ public:
     constexpr ref() = default;
 
     template<typename U>
+    requires std::convertible_to<U *, T *>
     constexpr ref(U &v) : data_{std::addressof(v)} {}
 
 public:
