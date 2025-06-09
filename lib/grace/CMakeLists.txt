@@ -1,4 +1,5 @@
 add_subdirectory(concepts)
+add_subdirectory(exception)
 add_subdirectory(iterator)
 add_subdirectory(memory)
 add_subdirectory(meta)
