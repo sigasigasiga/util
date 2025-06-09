@@ -9,3 +9,4 @@ project(
 set (CMAKE_CXX_STANDARD 26)
 
 add_subdirectory(lib)
+add_subdirectory(test)
