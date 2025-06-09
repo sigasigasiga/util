@@ -15,7 +15,9 @@ target_sources(
     get_reference.cppm
     ignore.cppm
     implicit_cast.cppm
+    move_only.cppm
     private_base_cast.cppm
+    scoped.cppm
 
     module.cppm
 )
