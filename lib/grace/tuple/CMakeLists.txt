@@ -9,6 +9,13 @@ target_sources(
     CXX_MODULES FILES
 
     index_sequence_for_tuple.cppm
+    tuple_like.cppm
 
     module.cppm
+)
+
+target_link_libraries(
+    grace.tuple
+
+    grace.type_traits
 )
