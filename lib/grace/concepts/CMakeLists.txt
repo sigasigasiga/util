@@ -9,6 +9,7 @@ target_sources(
     CXX_MODULES FILES
 
     conceptify.cppm
+    without_cvref.cppm
 
     module.cppm
 )
