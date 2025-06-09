@@ -8,8 +8,14 @@ target_sources(
     FILE_SET
     CXX_MODULES FILES
 
+    copy.cppm
     cut_rvalue_ref.cppm
+    decay_copy.cppm
+    default_assign.cppm
+    get_reference.cppm
     ignore.cppm
+    implicit_cast.cppm
+    private_base_cast.cppm
 
     module.cppm
 )
