@@ -5,7 +5,7 @@ module;
 
 export module grace.tuple:index_sequence_for_tuple;
 
-export namespace grace::meta {
+export namespace grace::tuple {
 
 // Easy and SFINAE-friendly way to make an index sequence
 template<
