@@ -4,7 +4,7 @@ module;
 
 export module grace.type_traits:copy_cvref;
 
-export namespace grace::meta {
+export namespace grace::type_traits {
 
 template<typename From, typename To>
 class copy_const
@@ -122,4 +122,4 @@ public:
 template<typename From, typename To>
 using copy_cvref_t = copy_cvref<From, To>::type;
 
-} // namespace grace::meta
+} // namespace grace::type_traits
