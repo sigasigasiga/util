@@ -9,6 +9,7 @@ target_sources(
     CXX_MODULES FILES
 
     cut_rvalue_ref.cppm
+    ignore.cppm
 
     module.cppm
 )
