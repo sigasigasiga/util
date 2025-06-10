@@ -17,6 +17,8 @@ target_sources(
     get.cppm
     get_reference.cppm
     indirect.cppm
+    subscript.cppm
+    throw_exception.cppm
 
     module.cppm
 )
