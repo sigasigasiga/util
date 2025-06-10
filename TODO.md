@@ -1,8 +1,3 @@
-## fn.bind
-
-* `compose`
-* `lazy_eval`
-
 ## fn.op
 
 * `lift`

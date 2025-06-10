@@ -8,8 +8,20 @@ target_sources(
     FILE_SET
     CXX_MODULES FILES
 
+    bind_expression.cppm
+    compose.cppm
+    lazy_eval.cppm
     lift_function.cppm
+    overload.cppm
     return_value.cppm
+    sequence.cppm
+    stored_func_invoker.cppm
 
     module.cppm
+)
+
+target_link_libraries(
+    grace.fn.bind
+
+    grace.fn.op
 )
