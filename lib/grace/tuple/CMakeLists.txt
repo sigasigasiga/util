@@ -8,6 +8,7 @@ target_sources(
     FILE_SET
     CXX_MODULES FILES
 
+    for_each_in_tuple.cppm
     index_sequence_for_tuple.cppm
     tuple_like.cppm
 
