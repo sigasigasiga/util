@@ -17,7 +17,15 @@ target_sources(
     implicit_cast.cppm
     move_only.cppm
     private_base_cast.cppm
+    read_only_value.cppm
     scoped.cppm
+    storage_base.cppm
 
     module.cppm
+)
+
+target_link_libraries(
+    grace.utility
+
+    grace.type_traits
 )
