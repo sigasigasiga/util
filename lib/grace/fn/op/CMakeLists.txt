@@ -13,10 +13,12 @@ target_sources(
     copy.cppm
     cut_rvalue_ref.cppm
     decay_copy.cppm
+    fold.cppm
     free.cppm
     get.cppm
     get_reference.cppm
     indirect.cppm
+    sequence.cppm
     subscript.cppm
     throw_exception.cppm
 
@@ -26,6 +28,7 @@ target_sources(
 target_link_libraries(
     grace.fn.op
 
+    grace.fn.invoke
     grace.tuple
     grace.utility
 )

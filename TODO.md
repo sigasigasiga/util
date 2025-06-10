@@ -5,16 +5,8 @@
 
 ## fn.op
 
-* `for_each_in_parameter_pack.hpp` (is it even needed?)
 * `lift`
-* `tuple_fold_invoke`
-* `tuple_sequence_invoke`
 
 ## ranges
 
 * `consign_view` (is it needed anyway?)
-
-## utility
-
-* `tuple_fold_invoke`
-* `tuple_sequence_invoke`

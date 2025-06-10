@@ -1,0 +1,23 @@
+module;
+
+#include <utility>
+
+export module grace.fn.op:sequence;
+
+import grace.fn.invoke;
+
+export namespace grace::fn::op {
+
+class [[nodiscard]] sequence
+{
+public:
+    template<typename FnTuple, typename ...Args>
+    static constexpr auto operator()(FnTuple &&fn_tuple, const Args &...args)
+        noexcept(noexcept(invoke::sequence(std::forward<FnTuple>(fn_tuple), args...)))
+        -> decltype(invoke::sequence(std::forward<FnTuple>(fn_tuple), args...))
+    {
+        return invoke::sequence(std::forward<FnTuple>(fn_tuple), args...);
+    }
+};
+
+} // namespace grace::fn::op
