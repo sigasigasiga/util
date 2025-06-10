@@ -1,6 +1,6 @@
 export module grace.utility:copy;
 
-namespace grace::utility {
+export namespace grace::utility {
 
 // works with explicit copy constructors
 template<typename T>
