@@ -10,6 +10,10 @@
 * `tuple_fold_invoke`
 * `tuple_sequence_invoke`
 
+## ranges
+
+* `consign_view` (is it needed anyway?)
+
 ## utility
 
 * `tuple_fold_invoke`
