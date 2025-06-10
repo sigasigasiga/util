@@ -1,3 +1,4 @@
+add_subdirectory(bit)
 add_subdirectory(concepts)
 add_subdirectory(exception)
 add_subdirectory(fn)
