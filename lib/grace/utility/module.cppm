@@ -1,5 +1,6 @@
 export module grace.utility;
 
+export import :cctype;
 export import :copy;
 export import :cut_rvalue_ref;
 export import :decay_copy;
