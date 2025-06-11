@@ -7,6 +7,8 @@ export module grace.fn.invoke:fold;
 
 import grace.tuple;
 
+namespace {
+
 // https://stackoverflow.com/a/39996086/10961484
 class adl_tag
 {};
@@ -46,6 +48,8 @@ constexpr auto impl(
         std::invoke(get<I>(std::forward<FnTuple>(tup)), std::forward<Args>(args)...)
     );
 }
+
+} // anonymous namespace
 
 export namespace grace::fn::invoke {
 

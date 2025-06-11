@@ -7,6 +7,8 @@ export module grace.ranges:get_lowest_base;
 import grace.meta;
 import grace.utility;
 
+namespace {
+
 using namespace grace;
 
 class adl_tag{};
@@ -26,6 +28,8 @@ template<typename Range>
 {
     return impl(adl_tag{}, std::forward<Range>(range).base(), meta::overload_priority<1>{});
 }
+
+} // anonymous namespace
 
 export namespace grace::ranges {
 

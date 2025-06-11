@@ -6,6 +6,8 @@ export module grace.memory:to_address;
 
 import grace.meta;
 
+namespace {
+
 template<std::uintmax_t N>
 using p = grace::meta::overload_priority<N>;
 
@@ -34,6 +36,8 @@ constexpr T *impl(adl_tag, T *ptr, p<2>) noexcept
     static_assert(!std::is_function_v<T>, "STL prohibits function pointers in `to_address`");
     return ptr;
 }
+
+} // anonymous namespace
 
 export namespace grace::memory {
 

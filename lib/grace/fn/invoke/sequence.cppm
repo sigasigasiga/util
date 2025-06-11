@@ -6,6 +6,8 @@ export module grace.fn.invoke:sequence;
 
 import grace.tuple;
 
+namespace {
+
 template<typename FnTuple, std::size_t... Is, typename... Args>
 auto impl(std::index_sequence<Is...>, FnTuple &&fn_tuple, const Args &...args)
     noexcept(noexcept((..., void(std::invoke(get<Is>(std::forward<FnTuple>(fn_tuple)), args...)))))
@@ -13,6 +15,8 @@ auto impl(std::index_sequence<Is...>, FnTuple &&fn_tuple, const Args &...args)
 {
     return (..., void(std::invoke(get<Is>(std::forward<FnTuple>(fn_tuple)), args...)));
 }
+
+} // anonymous namespace
 
 export namespace grace::fn::invoke {
 

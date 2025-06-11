@@ -8,6 +8,8 @@ export module grace.iterator:get_lowest_base;
 import grace.meta;
 import grace.utility;
 
+namespace {
+
 class adl_tag{};
 
 template<typename FwdIt>
@@ -25,6 +27,8 @@ template<typename FwdIt>
 {
     return impl(adl_tag{}, std::forward<FwdIt>(it).base(), grace::meta::overload_priority<1>{});
 }
+
+} // anonymous namespace
 
 export namespace grace::iterator {
 

@@ -7,6 +7,8 @@ export module grace.fn.wrap.args:unwrap_reference;
 import grace.type_traits;
 import grace.utility;
 
+namespace {
+
 using namespace grace;
 
 template<typename F>
@@ -39,6 +41,8 @@ public:
 
 template<typename F>
 impl(F) -> impl<F>;
+
+} // anonymous namespace
 
 export namespace grace::fn::wrap::args {
 

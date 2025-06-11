@@ -9,6 +9,8 @@ import :to_address;
 
 import grace.meta;
 
+namespace {
+
 template<typename Ptr>
 constexpr auto impl(const Ptr &ptr, grace::meta::overload_priority<0>)
 requires requires(std::size_t i) {
@@ -28,6 +30,8 @@ constexpr auto impl(const Ptr &ptr, grace::meta::overload_priority<1> = {})
 {
     return grace::memory::to_address(ptr);
 }
+
+} // anonymous namespace
 
 export namespace grace::memory {
 
