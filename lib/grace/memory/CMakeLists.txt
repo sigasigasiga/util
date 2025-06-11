@@ -9,6 +9,7 @@ target_sources(
     CXX_MODULES FILES
 
     get_deleter.cppm
+    prepend_deleter.cppm
     shared_from_this_base.cppm
     to_address.cppm
     to_address_arr.cppm
@@ -19,6 +20,8 @@ target_sources(
 target_link_libraries(
     grace.memory
 
+    grace.fn.bind
     grace.meta
     grace.type_traits
+    grace.utility
 )
