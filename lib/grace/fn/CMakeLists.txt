@@ -22,5 +22,7 @@ target_link_libraries(
     grace.fn
 
     grace.fn.bind
+    grace.fn.invoke
     grace.fn.op
+    grace.fn.wrap
 )
