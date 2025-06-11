@@ -9,6 +9,7 @@ target_sources(
     CXX_MODULES FILES
 
     fold.cppm
+    reverse_arguments.cppm
     sequence.cppm
 
     module.cppm
