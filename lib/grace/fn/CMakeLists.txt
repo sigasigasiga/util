@@ -1,6 +1,7 @@
 add_subdirectory(bind)
 add_subdirectory(invoke)
 add_subdirectory(op)
+add_subdirectory(wrap)
 
 add_library(grace.fn)
 

@@ -14,7 +14,7 @@ public:
     template<typename FnTuple, typename... Args>
     static constexpr auto operator()(FnTuple &&tup, Args &&...args)
         noexcept(noexcept(invoke::fold(std::forward<FnTuple>(tup), std::forward<Args>(args)...)))
-        -> decltype(invoke::fold( std::forward<FnTuple>(tup), std::forward<Args>(args)...))
+        -> decltype(invoke::fold(std::forward<FnTuple>(tup), std::forward<Args>(args)...))
     {
         return invoke::fold(std::forward<FnTuple>(tup), std::forward<Args>(args)...);
     }
