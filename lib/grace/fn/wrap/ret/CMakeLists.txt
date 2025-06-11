@@ -1,0 +1,22 @@
+add_library(grace.fn.wrap.ret)
+
+target_sources(
+    grace.fn.wrap.ret
+
+    PUBLIC
+
+    FILE_SET
+    CXX_MODULES FILES
+
+    cut_rvalue_ref.cppm
+    decay_copy.cppm
+
+    module.cppm
+)
+
+target_link_libraries(
+    grace.fn.wrap.ret
+
+    grace.fn.bind
+    grace.fn.op
+)

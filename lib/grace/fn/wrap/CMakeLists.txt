@@ -1,4 +1,5 @@
 add_subdirectory(args)
+add_subdirectory(ret)
 
 add_library(grace.fn.wrap)
 
@@ -17,4 +18,5 @@ target_link_libraries(
     grace.fn.wrap
 
     grace.fn.wrap.args
+    grace.fn.wrap.ret
 )
