@@ -7,7 +7,7 @@ export module grace.fn.invoke:fold;
 
 import grace.tuple;
 
-namespace {
+namespace fold {
 
 // https://stackoverflow.com/a/39996086/10961484
 class adl_tag
@@ -49,27 +49,27 @@ constexpr auto impl(
     );
 }
 
-} // anonymous namespace
+} // namespace fold
 
 export namespace grace::fn::invoke {
 
 template<typename FnTuple, typename ...Args>
 constexpr auto fold(FnTuple &&tup, Args &&...args)
-    noexcept(noexcept(impl(
-        adl_tag{},
+    noexcept(noexcept(fold::impl(
+        fold::adl_tag{},
         tuple::index_sequence_for_tuple<FnTuple>(),
         std::forward<FnTuple>(tup),
         std::forward<Args>(args)...
     )))
-    -> decltype(impl(
-        adl_tag{},
+    -> decltype(fold::impl(
+        fold::adl_tag{},
         tuple::index_sequence_for_tuple<FnTuple>(),
         std::forward<FnTuple>(tup),
         std::forward<Args>(args)...
     ))
 {
-    return impl(
-        adl_tag{},
+    return fold::impl(
+        fold::adl_tag{},
         tuple::index_sequence_for_tuple<FnTuple>(),
         std::forward<FnTuple>(tup),
         std::forward<Args>(args)...

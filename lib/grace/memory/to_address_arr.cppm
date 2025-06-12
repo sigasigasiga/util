@@ -9,7 +9,7 @@ import :to_address;
 
 import grace.meta;
 
-namespace {
+namespace to_address_arr {
 
 template<typename Ptr>
 constexpr auto impl(const Ptr &ptr, grace::meta::overload_priority<0>)
@@ -31,16 +31,16 @@ constexpr auto impl(const Ptr &ptr, grace::meta::overload_priority<1> = {})
     return grace::memory::to_address(ptr);
 }
 
-} // anonymous namespace
+} // namespace to_address_arr
 
 export namespace grace::memory {
 
 // same as `grace::memory::to_address` but supports `{unique,shared}_ptr<T[]>`
 [[nodiscard]] constexpr auto to_address_arr(const auto &ptr)
-    noexcept(noexcept(impl(ptr)))
-    -> decltype(impl(ptr))
+    noexcept(noexcept(to_address_arr::impl(ptr)))
+    -> decltype(to_address_arr::impl(ptr))
 {
-    return impl(ptr);
+    return to_address_arr::impl(ptr);
 }
 
 } // namespace grace::memory

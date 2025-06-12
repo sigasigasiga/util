@@ -7,7 +7,7 @@ export module grace.fn.wrap.args:unwrap_reference;
 import grace.type_traits;
 import grace.utility;
 
-namespace {
+namespace unwrap_reference {
 
 using namespace grace;
 
@@ -42,16 +42,16 @@ public:
 template<typename F>
 impl(F) -> impl<F>;
 
-} // anonymous namespace
+} // namespace unwrap_reference
 
 export namespace grace::fn::wrap::args {
 
 template<typename F>
 [[nodiscard]] constexpr auto unwrap_reference(F &&fn)
-    noexcept(noexcept(impl(std::forward<F>(fn))))
-    -> decltype(impl(std::forward<F>(fn)))
+    noexcept(noexcept(unwrap_reference::impl(std::forward<F>(fn))))
+    -> decltype(unwrap_reference::impl(std::forward<F>(fn)))
 {
-    return impl(std::forward<F>(fn));
+    return unwrap_reference::impl(std::forward<F>(fn));
 }
 
 } // namespace grace::fn::wrap::args

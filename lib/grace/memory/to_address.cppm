@@ -6,7 +6,7 @@ export module grace.memory:to_address;
 
 import grace.meta;
 
-namespace {
+namespace to_address {
 
 template<std::uintmax_t N>
 using p = grace::meta::overload_priority<N>;
@@ -37,16 +37,16 @@ constexpr T *impl(adl_tag, T *ptr, p<2>) noexcept
     return ptr;
 }
 
-} // anonymous namespace
+} // namespace to_address
 
 export namespace grace::memory {
 
 // like `std::to_address` but is SFINAE-friendly
 [[nodiscard]] constexpr auto to_address(const auto &ptr)
-    noexcept(noexcept(impl(adl_tag{}, ptr, p<2>{})))
-    -> decltype(impl(adl_tag{}, ptr, p<2>{}))
+    noexcept(noexcept(to_address::impl(to_address::adl_tag{}, ptr, to_address::p<2>{})))
+    -> decltype(to_address::impl(to_address::adl_tag{}, ptr, to_address::p<2>{}))
 {
-    return impl(adl_tag{}, ptr, p<2>{});
+    return to_address::impl(to_address::adl_tag{}, ptr, to_address::p<2>{});
 }
 
 } // namespace grace::memory

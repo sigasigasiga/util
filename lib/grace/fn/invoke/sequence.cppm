@@ -6,7 +6,7 @@ export module grace.fn.invoke:sequence;
 
 import grace.tuple;
 
-namespace {
+namespace sequence {
 
 template<typename FnTuple, std::size_t... Is, typename... Args>
 auto impl(std::index_sequence<Is...>, FnTuple &&fn_tuple, const Args &...args)
@@ -16,25 +16,25 @@ auto impl(std::index_sequence<Is...>, FnTuple &&fn_tuple, const Args &...args)
     return (..., void(std::invoke(get<Is>(std::forward<FnTuple>(fn_tuple)), args...)));
 }
 
-} // anonymous namespace
+} // namespace sequence
 
 export namespace grace::fn::invoke {
 
 // TODO: I'm not sure if allowing mutable references is a good idea, so it is `const` for now
 template<typename FnTuple, typename... Args>
 auto sequence(FnTuple &&fn_tuple, const Args &...args)
-    noexcept(noexcept(impl(
+    noexcept(noexcept(sequence::impl(
         tuple::index_sequence_for_tuple<FnTuple>(),
         std::forward<FnTuple>(fn_tuple),
         args...
     )))
-    -> decltype(impl(
+    -> decltype(sequence::impl(
         tuple::index_sequence_for_tuple<FnTuple>(),
         std::forward<FnTuple>(fn_tuple),
         args...
     ))
 {
-    return impl(
+    return sequence::impl(
         tuple::index_sequence_for_tuple<FnTuple>(),
         std::forward<FnTuple>(fn_tuple),
         args...

@@ -7,7 +7,7 @@ export module grace.fn.wrap.args:ignore;
 import grace.type_traits;
 import grace.utility;
 
-namespace {
+namespace ignore {
 
 using namespace grace;
 
@@ -30,16 +30,16 @@ public:
 template<typename T>
 impl(T) -> impl<T>;
 
-} // anonymous namespace
+} // namespace ignore
 
 export namespace grace::fn::wrap::args {
 
 template<std::invocable F>
 [[nodiscard]] constexpr auto ignore(F &&fn)
-    noexcept(noexcept(impl(std::forward<F>(fn))))
-    -> decltype(impl(std::forward<F>(fn)))
+    noexcept(noexcept(ignore::impl(std::forward<F>(fn))))
+    -> decltype(ignore::impl(std::forward<F>(fn)))
 {
-    return impl(std::forward<F>(fn));
+    return ignore::impl(std::forward<F>(fn));
 }
 
 } // namespace grace::fn::wrap::args
