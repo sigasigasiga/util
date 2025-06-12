@@ -13,6 +13,7 @@ target_sources(
     shared_from_this_base.cppm
     to_address.cppm
     to_address_arr.cppm
+    to_unique_ptr.cppm
 
     module.cppm
 )
