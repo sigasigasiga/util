@@ -12,6 +12,7 @@ target_sources(
     compose.cppm
     lazy_eval.cppm
     lift_function.cppm
+    operators.cppm
     overload.cppm
     return_value.cppm
     sequence.cppm
@@ -23,5 +24,7 @@ target_sources(
 target_link_libraries(
     grace.fn.bind
 
+    grace.compat
     grace.fn.op
+    grace.fn.wrap.args
 )
