@@ -9,6 +9,7 @@ target_sources(
     CXX_MODULES FILES
 
     get_deleter.cppm
+    make_static_shared_ptr.cppm
     prepend_deleter.cppm
     shared_from_this_base.cppm
     to_address.cppm
