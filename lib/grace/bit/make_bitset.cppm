@@ -11,10 +11,10 @@ export namespace grace::bit {
 // you may use `fn::invoke::reverse_arguments` to fix that
 template<typename... Args, std::size_t Sz = sizeof...(Args)>
 [[nodiscard]] constexpr auto make_bitset(Args &&...args)
-    noexcept(noexcept(std::bitset<Sz>{std::array{(std::forward<Args>(args) ? '1' : '0')...}.data(), Sz}))
-    -> decltype(std::bitset<Sz>{std::array{(std::forward<Args>(args) ? '1' : '0')...}.data(), Sz})
+    noexcept(noexcept(std::bitset<Sz>{std::array{(std::forward<Args>(args) ? '1' : '0')..., '\0'}.data()}))
+    -> decltype(std::bitset<Sz>{std::array{(std::forward<Args>(args) ? '1' : '0')..., '\0'}.data()})
 {
-    return std::bitset<Sz>{std::array{(std::forward<Args>(args) ? '1' : '0')...}.data(), Sz};
+    return std::bitset<Sz>{std::array{(std::forward<Args>(args) ? '1' : '0')..., '\0'}.data()};
 }
 
 } // namespace grace::bit
