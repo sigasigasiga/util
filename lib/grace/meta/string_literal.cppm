@@ -20,7 +20,7 @@ public:
 
     constexpr string_literal(const char (&str)[N])
     {
-        if(str[N - 1] == '\0') {
+        if (str[N - 1] == '\0') {
             std::ranges::copy(str, std::ranges::begin(data));
         } else {
             throw std::invalid_argument{"the string must be null-terminated"};

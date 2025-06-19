@@ -19,7 +19,7 @@ FwdTo &default_assign(FwdTo &&to, FwdFrom &&from)
     noexcept(noexcept(To(std::forward<FwdFrom>(from)).swap(to)))
     requires requires { To(std::forward<FwdFrom>(from)).swap(to); }
 {
-    if(std::addressof(to) != std::addressof(from)) {
+    if (std::addressof(to) != std::addressof(from)) {
         To(std::forward<FwdFrom>(from)).swap(to);
     }
 

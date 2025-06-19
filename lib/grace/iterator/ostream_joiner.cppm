@@ -48,7 +48,7 @@ public:
     template<typename T>
     ostream_joiner &operator=(const T &value)
     {
-        if(!std::exchange(m_first, false)) {
+        if (!std::exchange(m_first, false)) {
             *m_os << m_delim;
         }
 
