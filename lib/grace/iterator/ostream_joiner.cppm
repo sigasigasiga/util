@@ -25,16 +25,16 @@ public:
 
 public:
     ostream_joiner(ostream_type &os, const DelimT &delim)
-        : os_{std::addressof(os)}
-        , delim_{delim}
-        , first_{true}
+        : m_os{std::addressof(os)}
+        , m_delim{delim}
+        , m_first{true}
     {
     }
 
     ostream_joiner(ostream_type &os, DelimT &&delim)
-        : os_{std::addressof(os)}
-        , delim_{std::move(delim)}
-        , first_{true}
+        : m_os{std::addressof(os)}
+        , m_delim{std::move(delim)}
+        , m_first{true}
     {
     }
 
@@ -48,11 +48,11 @@ public:
     template<typename T>
     ostream_joiner &operator=(const T &value)
     {
-        if(!std::exchange(first_, false)) {
-            *os_ << delim_;
+        if(!std::exchange(m_first, false)) {
+            *m_os << m_delim;
         }
 
-        *os_ << value;
+        *m_os << value;
 
         return *this;
     }
@@ -64,9 +64,9 @@ public:
     ostream_joiner &operator++(int) noexcept { return *this; }
 
 private:
-    ostream_type *os_;
-    DelimT delim_;
-    bool first_;
+    ostream_type *m_os;
+    DelimT m_delim;
+    bool m_first;
 };
 
 template<typename CharT, typename Traits, typename DelimT>

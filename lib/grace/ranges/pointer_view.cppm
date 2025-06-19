@@ -21,24 +21,24 @@ class [[nodiscard]] pointer_view : public std::ranges::view_interface<pointer_vi
 {
 public:
     constexpr pointer_view(Ptr ptr, Sent sent)
-        : ptr_{std::move(ptr)}
-        , sent_{std::move(sent)}
+        : m_ptr{std::move(ptr)}
+        , m_sent{std::move(sent)}
     {
     }
 
     constexpr pointer_view(Ptr ptr, std::size_t n)
-        : ptr_{std::move(ptr)}
-        , sent_{memory::to_address_arr(ptr_) + n}
+        : m_ptr{std::move(ptr)}
+        , m_sent{memory::to_address_arr(m_ptr) + n}
     {
     }
 
 public:
-    [[nodiscard]] constexpr auto begin() const { return memory::to_address_arr(ptr_); }
-    [[nodiscard]] constexpr auto end() const { return sent_; }
+    [[nodiscard]] constexpr auto begin() const { return memory::to_address_arr(m_ptr); }
+    [[nodiscard]] constexpr auto end() const { return m_sent; }
 
 private:
-    Ptr ptr_;
-    Sent sent_;
+    Ptr m_ptr;
+    Sent m_sent;
 };
 
 template<typename Ptr>

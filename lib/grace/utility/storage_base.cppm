@@ -50,7 +50,7 @@ public:
     constexpr
     storage_base(const storage_base<U> &value)
         noexcept(std::is_nothrow_copy_constructible_v<T>)
-        : value_(value.get())
+        : m_value(value.get())
     {
     }
 
@@ -70,7 +70,7 @@ public:
     constexpr
     storage_base(storage_base<U> &&value)
         noexcept(std::is_nothrow_move_constructible_v<T>)
-        : value_(std::move(value).get())
+        : m_value(std::move(value).get())
     {
     }
 
@@ -79,7 +79,7 @@ public:
     requires std::is_constructible_v<T, Args...>
     constexpr explicit storage_base(std::in_place_t, Args &&...args)
         noexcept(std::is_nothrow_constructible_v<T, Args...>) // strengthened
-        : value_(std::forward<Args>(args)...)
+        : m_value(std::forward<Args>(args)...)
     {
     }
 
@@ -92,7 +92,7 @@ public:
         Args &&...args
     )
         noexcept(std::is_nothrow_constructible_v<T, std::initializer_list<U> &, Args...>) // strengthened
-        : value_(ilist, std::forward<Args>(args)...)
+        : m_value(ilist, std::forward<Args>(args)...)
     {
     }
 
@@ -106,7 +106,7 @@ public:
     constexpr
     storage_base(U &&value)
         noexcept(std::is_nothrow_constructible_v<T, U>) // strengthened
-        : value_(std::forward<U>(value))
+        : m_value(std::forward<U>(value))
     {
     }
 
@@ -135,7 +135,7 @@ public:
     constexpr storage_base &operator=(U &&value)
         noexcept(std::is_nothrow_assignable_v<T, U>) // strengthened
     {
-        this->value_ = std::forward<U>(value);
+        this->m_value = std::forward<U>(value);
         return *this;
     }
 
@@ -154,7 +154,7 @@ public:
     constexpr storage_base &operator=(const storage_base<U> &rhs)
         noexcept(std::is_nothrow_assignable_v<T, const U &>) // strengthened
     {
-        this->value_ = rhs.value();
+        this->m_value = rhs.value();
         return *this;
     }
 
@@ -173,7 +173,7 @@ public:
     constexpr storage_base &operator=(storage_base<U> &&rhs)
         noexcept(std::is_nothrow_assignable_v<T, U &&>) // strengthened
     {
-        this->value_ = std::move(rhs).value();
+        this->m_value = std::move(rhs).value();
         return *this;
     }
 
@@ -181,11 +181,11 @@ protected:
     template<typename Self, typename USelf = type_traits::copy_cvref_t<Self &&, storage_base>>
     [[nodiscard]] constexpr auto &&value(this Self &&self) noexcept
     {
-        return (private_base_cast<USelf>)(self).value_;
+        return (private_base_cast<USelf>)(self).m_value;
     }
 
 private:
-    [[no_unique_address]] T value_;
+    [[no_unique_address]] T m_value;
 };
 
 // As in `optional`, we have a single deducing guide here

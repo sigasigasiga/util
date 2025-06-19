@@ -24,7 +24,7 @@ public:
     requires std::is_convertible_v<Ex *, ExBase *> &&
              (!std::is_same_v<Ex, storage>)
     explicit constexpr storage(FwdEx &&fwd_ex) noexcept
-        : ep_{std::make_exception_ptr(std::forward<FwdEx>(fwd_ex))}
+        : m_ep{std::make_exception_ptr(std::forward<FwdEx>(fwd_ex))}
     {
     }
 
@@ -32,16 +32,16 @@ public:
     requires std::is_convertible_v<ExDerived *, ExBase *> &&
              (!std::is_same_v<ExDerived, ExBase>)
     constexpr storage(const storage<ExDerived> &rhs) noexcept
-        : ep_{rhs.get_exception_ptr()}
+        : m_ep{rhs.get_exception_ptr()}
     {
     }
 
 public:
-    [[noreturn]] constexpr void throw_exception() const { std::rethrow_exception(ep_); }
-    [[nodiscard]] constexpr std::exception_ptr get_exception_ptr() const noexcept { return ep_; }
+    [[noreturn]] constexpr void throw_exception() const { std::rethrow_exception(m_ep); }
+    [[nodiscard]] constexpr std::exception_ptr get_exception_ptr() const noexcept { return m_ep; }
 
 private:
-    std::exception_ptr ep_;
+    std::exception_ptr m_ep;
 };
 
 template<typename Ex>
