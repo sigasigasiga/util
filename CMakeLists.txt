@@ -6,6 +6,11 @@ project(
     LANGUAGES CXX
 )
 
+# Generate a .gitignore in the build directory to ignore all its contents
+if(NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+  file(WRITE "${CMAKE_BINARY_DIR}/.gitignore" "*\n")
+endif()
+
 set (CMAKE_CXX_STANDARD 26)
 
 add_subdirectory(lib)
