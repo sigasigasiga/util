@@ -8,6 +8,7 @@ target_sources(
     FILE_SET
     CXX_MODULES FILES
 
+    dummy.cppm
     overload_priority.cppm
     string_literal.cppm
     tag.cppm
