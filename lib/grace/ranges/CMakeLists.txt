@@ -8,6 +8,7 @@ target_sources(
     FILE_SET
     CXX_MODULES FILES
 
+    consign_view.cppm
     get_lowest_base.cppm
     make_subrange.cppm
     pointer_view.cppm
@@ -21,5 +22,6 @@ target_link_libraries(
     grace.memory
     grace.meta
     grace.tuple
+    grace.type_traits
     grace.utility
 )
