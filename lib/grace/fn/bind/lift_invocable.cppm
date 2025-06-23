@@ -11,7 +11,7 @@ template<auto Fn>
 struct lift_invocable
 {
     template<typename ...Args>
-    constexpr auto operator()(Args &&...args)
+    static constexpr auto operator()(Args &&...args)
         noexcept(noexcept(std::invoke(Fn, std::forward<Args>(args)...)))
         -> decltype(std::invoke(Fn, std::forward<Args>(args)...))
     {
