@@ -4,6 +4,7 @@ export import :bind_expression;
 export import :compose;
 export import :lazy_eval;
 export import :lift_function;
+export import :lift_invocable;
 export import :operators;
 export import :overload;
 export import :return_value;

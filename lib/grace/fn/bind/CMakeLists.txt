@@ -12,6 +12,7 @@ target_sources(
     compose.cppm
     lazy_eval.cppm
     lift_function.cppm
+    lift_invocable.cppm
     operators.cppm
     overload.cppm
     return_value.cppm
