@@ -11,7 +11,8 @@ if (NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   file(WRITE "${CMAKE_BINARY_DIR}/.gitignore" "*\n")
 endif()
 
-set (CMAKE_CXX_STANDARD 26)
+set(CMAKE_CXX_STANDARD 26)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(lib)
 add_subdirectory(test)
