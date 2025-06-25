@@ -1,6 +1,7 @@
 module;
 
 #include <ranges>
+#include <version>
 
 export module grace.ranges:consign_view;
 
@@ -63,6 +64,8 @@ public:
 
 namespace views {
 
+#if __cpp_lib_ranges >= 202202L
+
 template<typename Value>
 class consign_closure : public std::ranges::range_adaptor_closure<consign_closure<Value>>
 {
@@ -91,6 +94,8 @@ constexpr auto consign(auto value)
 {
     return consign_closure(std::move(value));
 }
+
+#endif // __cpp_lib_ranges >= 202202L
 
 } // namespace views
 
