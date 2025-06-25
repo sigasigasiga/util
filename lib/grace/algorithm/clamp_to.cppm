@@ -9,7 +9,7 @@ export namespace grace::algorithm {
 
 template<std::integral To, std::integral From>
 requires (sizeof(To) <= sizeof(From))
-constexpr To clamp_to(From value) {
+[[nodiscard]] constexpr To clamp_to(From value) {
     return static_cast<To>(std::clamp(
         value,
         static_cast<From>(std::numeric_limits<To>::min()),

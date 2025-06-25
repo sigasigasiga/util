@@ -31,6 +31,7 @@ target_link_libraries(
 
     PUBLIC
 
+    grace.algorithm
     grace.bit
     grace.compat
     grace.concepts
