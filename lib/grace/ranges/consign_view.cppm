@@ -64,7 +64,7 @@ public:
 
 namespace views {
 
-#if __cpp_lib_ranges >= 202202L
+#if 0
 
 template<typename Value>
 class consign_closure : public std::ranges::range_adaptor_closure<consign_closure<Value>>
