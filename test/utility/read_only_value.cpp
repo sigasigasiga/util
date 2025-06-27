@@ -1,11 +1,11 @@
-import grace.utility;
-
 #include <concepts>
 #include <utility>
 
+import grace.utility;
+
 int main()
 {
-    using namespace grace::utility;
+    using grace::utility::read_only_value;
     static_assert(std::constructible_from<read_only_value<int>, int>);
     static_assert(std::constructible_from<read_only_value<int>, read_only_value<int>>);
     static_assert(!std::assignable_from<read_only_value<int>, int>);
