@@ -15,6 +15,7 @@ target_sources(
     decay_copy.cppm
     free.cppm
     get.cppm
+    get_reference.cppm
     indirect.cppm
     objectify.cppm
     ref.cppm
