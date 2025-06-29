@@ -17,6 +17,7 @@ target_sources(
     ignore.cppm
     implicit_cast.cppm
     move_only.cppm
+    objectify.cppm
     private_base_cast.cppm
     read_only_value.cppm
     scoped.cppm
