@@ -18,6 +18,7 @@ target_sources(
     get.cppm
     get_reference.cppm
     indirect.cppm
+    objectify.cppm
     sequence.cppm
     subscript.cppm
     throw_exception.cppm

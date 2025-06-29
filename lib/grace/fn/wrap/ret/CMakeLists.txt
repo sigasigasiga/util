@@ -10,6 +10,7 @@ target_sources(
 
     cut_rvalue_ref.cppm
     decay_copy.cppm
+    objectify.cppm
 
     module.cppm
 )

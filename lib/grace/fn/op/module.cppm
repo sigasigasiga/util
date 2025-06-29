@@ -9,6 +9,7 @@ export import :fold;
 export import :free;
 export import :get;
 export import :get_reference;
+export import :objectify;
 export import :sequence;
 export import :subscript;
 export import :throw_exception;
