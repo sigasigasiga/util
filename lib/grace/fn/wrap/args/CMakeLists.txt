@@ -17,6 +17,5 @@ target_sources(
 target_link_libraries(
     grace.fn.wrap.args
 
-    grace.type_traits
-    grace.utility
+    grace.fn.invoke
 )
