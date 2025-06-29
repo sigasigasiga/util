@@ -8,5 +8,6 @@ export import :decay_copy;
 export import :free;
 export import :get;
 export import :objectify;
+export import :ref;
 export import :subscript;
 export import :throw_exception;
