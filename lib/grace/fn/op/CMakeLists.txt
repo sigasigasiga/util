@@ -13,13 +13,10 @@ target_sources(
     copy.cppm
     cut_rvalue_ref.cppm
     decay_copy.cppm
-    fold.cppm
     free.cppm
     get.cppm
-    get_reference.cppm
     indirect.cppm
     objectify.cppm
-    sequence.cppm
     subscript.cppm
     throw_exception.cppm
 

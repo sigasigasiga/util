@@ -27,4 +27,5 @@ target_link_libraries(
 
     grace.compat
     grace.fn.op
+    grace.fn.invoke
 )
