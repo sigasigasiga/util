@@ -19,6 +19,7 @@ public:
 template<typename F>
 bind_expression(F) -> bind_expression<F>;
 
+// TODO: move to `fn.wrap`? which `wrap` tho: `wrap.args`/`wrap.ret`/`wrap`/`wrap.something`?
 template<typename F>
 [[nodiscard]] constexpr auto make_bind_expression(F &&fn)
     noexcept(noexcept(bind_expression(std::forward<F>(fn))))
