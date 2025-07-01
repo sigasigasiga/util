@@ -8,7 +8,7 @@ export module grace.utility:decay_copy;
 export namespace grace::utility {
 
 // https://en.cppreference.com/w/cpp/standard_library/decay-copy
-// works with explicit copy constructors
+// works with explicit constructors
 template<typename T>
 [[nodiscard]] constexpr auto decay_copy(T &&value)
     noexcept(noexcept(std::decay_t<T>(std::forward<T>(value))))
