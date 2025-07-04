@@ -8,6 +8,7 @@ target_sources(
     FILE_SET
     CXX_MODULES FILES
 
+    apply.cppm
     ignore.cppm
     unwrap_reference.cppm
 
